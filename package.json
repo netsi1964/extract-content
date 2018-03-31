@@ -1,0 +1,29 @@
+{
+  "name": "extract-content",
+  "version": "1.0.0",
+  "description": "A service which has an endpoint to extract data from an URL using CSS selectors",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netsi1964/extract-content.git"
+  },
+  "keywords": [
+    "endpoint",
+    "service",
+    "node",
+    "heroku"
+  ],
+  "author": "Sten Hougaard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/netsi1964/extract-content/issues"
+  },
+  "homepage": "https://github.com/netsi1964/extract-content#readme",
+  "dependencies": {
+    "body-parser": "1.18.2",
+    "express": "4.16.3"
+  }
+}
