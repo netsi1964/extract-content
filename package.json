@@ -24,6 +24,8 @@
   "homepage": "https://github.com/netsi1964/extract-content#readme",
   "dependencies": {
     "body-parser": "1.18.2",
-    "express": "4.16.3"
+    "express": "4.16.3",
+    "jsdom": "11.6.2",
+    "request": "2.85.0"
   }
 }
