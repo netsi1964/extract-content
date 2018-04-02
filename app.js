@@ -8,6 +8,7 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 app.use(function(req, res, next) {
+  console.log(req.get('host'))
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
