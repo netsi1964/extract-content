@@ -21,9 +21,17 @@ const extract = (req, res) => {
             let selectors = Object.keys(extract);
             selectors.map(key => {
               const selector = extract[key];
-              const found = document.querySelector(selector);
+              const found = Array.from(document.querySelectorAll(selector));
               if (found !== null) {
-                values[key] = found.outerHTML;
+                var all = [];
+                if (found.length > 1) {
+                  found.map(ele => {
+                    all.push(ele.outerHTML);
+                  });
+                  values[key] = all;
+                } else {
+                  values[key] = found[0] ? found[0].outerHTML : "";
+                }
               } else {
                 values[key] = "";
               }

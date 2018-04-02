@@ -6,7 +6,6 @@ const extract = (req, res) => {
   let { from, extract } = req.query;
   if (typeof from !== "undefined" && typeof extract !== "undefined") {
     try {
-      console.log(extract);
       extract = JSON.parse(extract);
 
       request(from, function(error, response, body) {
@@ -19,9 +18,17 @@ const extract = (req, res) => {
           let values = {};
           selectors.map(key => {
             const selector = extract[key];
-            const found = document.querySelector(selector);
+            const found = Array.from(document.querySelectorAll(selector));
             if (found !== null) {
-              values[key] = found.textContent.trim();
+              var all = [];
+              if (found.length > 1) {
+                found.map(ele => {
+                  all.push(ele.textContent.trim());
+                });
+                values[key] = all;
+              } else {
+                values[key] = found[0] ? found[0].textContent.trim() : "";
+              }
             } else {
               values[key] = "";
             }
