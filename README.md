@@ -17,6 +17,16 @@ Example request:
 
 The extract values have been encoded using `encodeURIComponent`.
 
+Original json value:
+```
+{"overskrift":"p"}
+``` 
+
+Same json value encoded:
+```
+%7B%22overskrift%22%3A%22p%22%7D
+```
+
 
 | parameter | description | required |
 | --------- | ----------- | -------- |
@@ -35,4 +45,4 @@ Returns a JSON with either the whole HTML from the specified `from` url, or as w
 
 
 
-Created by Sten Hougaard, Marts 2018. [@netsi1964](htts://twitter.com/netsi1964).
+Created by Sten Hougaard, Marts 2018. [@netsi1964](https://twitter.com/netsi1964).
