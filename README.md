@@ -3,6 +3,8 @@ A service which has an endpoint to extract data from an URL using CSS selectors
 
 You may see example of use on [this pen on CodePen.io](https://codepen.io/netsi1964/details/mxLqPG/).
 
+I have also made a test page where you can try it out: [Extract content from any website](https://codepen.io/netsi1964/pen/XEYggj/).
+
 You can read a series of post about the project on Medium.com: [Let’s build a content extract endpoint](https://medium.com/@netsi1964/lets-build-a-content-extract-endpoint-part-1-27d0aceda31).
 
 ## Endpoints
