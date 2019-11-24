@@ -42,7 +42,9 @@ const extract = (req, res) => {
         }
       });
     } catch (error) {
-      res.status(404).send(`${error.message}`);
+      res
+        .status(404)
+        .send(`${error.message}<br>from=${from}<br>extract=${extract}`);
     }
   } else {
     res.status(404).send(`Please supply from and extract parameters`);
