@@ -7,8 +7,6 @@ const extract = (req, res) => {
   if (typeof from !== "undefined") {
     let route = "";
     try {
-      extract = JSON.parse(extract);
-
       route = "Doing request...";
       request(from, function(error, response, body) {
         if (error) {
@@ -16,6 +14,7 @@ const extract = (req, res) => {
         } else {
           if (typeof extract !== "undefined") {
             route = "Extracting content";
+            extract = JSON.parse(extract);
 
             const html = new JSDOM(body);
             const document = html.window.document;
