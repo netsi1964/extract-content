@@ -9,6 +9,7 @@ const extract = (req, res) => {
     try {
       extract = JSON.parse(extract);
 
+      route = "Doing request...";
       request(from, function(error, response, body) {
         if (error) {
           res.status(404).send(`Could not fetch data from ${from}`);
