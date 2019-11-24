@@ -4,7 +4,7 @@ const { JSDOM } = jsdom;
 
 const extract = (req, res) => {
   let { from, extract } = req.query;
-  if (typeof from !== "undefined" && typeof extract !== "undefined") {
+  if (typeof from !== "undefined") {
     try {
       extract = JSON.parse(extract);
 
@@ -12,28 +12,33 @@ const extract = (req, res) => {
         if (error) {
           res.status(404).send(`Could not fetch data from ${from}`);
         } else {
-          const html = new JSDOM(body);
-          const document = html.window.document;
-          let selectors = Object.keys(extract);
-          let values = {};
-          selectors.map(key => {
-            const selector = extract[key];
-            const found = Array.from(document.querySelectorAll(selector));
-            if (found !== null) {
-              var all = [];
-              if (found.length > 1) {
-                found.map(ele => {
-                  all.push(ele.textContent.trim());
-                });
-                values[key] = all;
+          if (typeof extract !== "undefined") {
+            const html = new JSDOM(body);
+            const document = html.window.document;
+            let selectors = Object.keys(extract);
+            let values = {};
+            selectors.map(key => {
+              const selector = extract[key];
+              const found = Array.from(document.querySelectorAll(selector));
+              if (found !== null) {
+                var all = [];
+                if (found.length > 1) {
+                  found.map(ele => {
+                    all.push(ele.textContent.trim());
+                  });
+                  values[key] = all;
+                } else {
+                  values[key] = found[0] ? found[0].textContent.trim() : "";
+                }
               } else {
-                values[key] = found[0] ? found[0].textContent.trim() : "";
+                values[key] = "";
               }
-            } else {
-              values[key] = "";
-            }
-          });
-          res.status(200).send(values);
+            });
+            res.status(200).send(values);
+          } else {
+            // Just return the response body, as no extract was specified we simply act as proxy
+            res.status(200).send(body);
+          }
         }
       });
     } catch (error) {
