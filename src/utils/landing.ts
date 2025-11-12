@@ -296,7 +296,7 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="resources">
       <a href="https://codepen.io/netsi1964/pen/XEYggj/" class="resource-link" target="_blank">Interactive Demo</a>
       <a href="https://medium.com/@netsi1964/lets-build-a-content-extract-endpoint-part-1-27d0aceda31" class="resource-link" target="_blank">Tutorial Series</a>
-      <a href="https://codepen.io/netsi1964/details/mxLqPG/" class="resource-link" target="_blank">Example Pen</a>
+      <a href="https://codepen.io/netsi1964/full/mxLqPG" class="resource-link" target="_blank">Example Pen</a>
       <a href="https://github.com/netsi1964/extract-content" class="resource-link" target="_blank">GitHub Repo</a>
     </div>
   </div>
@@ -484,7 +484,7 @@ export function generateLandingPage(baseUrl: string): string {
   </div>
 
   <footer>
-    <p>Created by <a href="https://twitter.com/netsi1964" target="_blank">@netsi1964</a>, March 2018</p>
+    <p>Created by <a href="https://twitter.com/netsi1964" target="_blank">@netsi1964</a>, March 2018, updated Nov 2025</p>
     <p>Powered by Deno 🦕 | <a href="https://github.com/netsi1964/extract-content" target="_blank">View on GitHub</a></p>
   </footer>
 
