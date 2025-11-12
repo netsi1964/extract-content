@@ -19,6 +19,8 @@
 
   <search-bar></search-bar>
 
+  <disambiguation-links></disambiguation-links>
+
   <loading-spinner></loading-spinner>
 
   <error-message></error-message>
@@ -175,7 +177,8 @@ const extractConfig = {
   title: "h1#firstHeading",
   intro: ".mw-parser-output > p",
   image: ".infobox img",
-  categories: ".catlinks li a"
+  categories: ".catlinks li a",
+  disambiguation: ".mw-parser-output > ul > li > a"
 };
 
 // ============================================
@@ -197,7 +200,7 @@ class SearchBar extends HTMLElement {
       <style>
         :host {
           display: block;
-          margin-block-end: 2rem;
+          margin-block-end: 1.5rem;
           animation: slideUp 0.6s ease-out 0.2s both;
         }
 
@@ -459,6 +462,153 @@ class ErrorMessage extends HTMLElement {
 }
 
 // ============================================
+// Disambiguation Links Web Component
+// ============================================
+class DisambiguationLinks extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    this.render();
+  }
+
+  render() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: none;
+          animation: slideUp 0.4s ease-out;
+        }
+
+        :host([active]) {
+          display: block;
+        }
+
+        .disambiguation-card {
+          background: white;
+          border-radius: var(--radius-md, 12px);
+          padding: 1.5rem;
+          margin-block-end: 1.5rem;
+          box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,0.12));
+          border-left: 4px solid var(--primary-color, #667eea);
+        }
+
+        .title {
+          color: var(--text-primary, #1a1a1a);
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin-block-end: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .icon {
+          font-size: 1.3rem;
+        }
+
+        .links {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 0.625rem;
+        }
+
+        .link {
+          background: #f8f9fa;
+          color: var(--primary-color, #667eea);
+          padding: 0.75rem 1rem;
+          border-radius: var(--radius-sm, 8px);
+          text-decoration: none;
+          font-weight: 500;
+          transition: var(--transition, all 0.3s);
+          cursor: pointer;
+          border: 2px solid transparent;
+          display: block;
+          text-align: center;
+        }
+
+        .link:hover {
+          background: var(--primary-color, #667eea);
+          color: white;
+          border-color: var(--primary-color, #667eea);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.08));
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @container (max-width: 500px) {
+          .links {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+
+      <div class="disambiguation-card">
+        <div class="title">
+          <span class="icon">🔀</span>
+          <span id="titleText">This may refer to:</span>
+        </div>
+        <div class="links" id="linksContainer"></div>
+      </div>
+    `;
+  }
+
+  setLinks(links, title) {
+    const container = this.shadowRoot.querySelector('#linksContainer');
+    const titleText = this.shadowRoot.querySelector('#titleText');
+
+    if (title) {
+      titleText.textContent = `"${title}" may refer to:`;
+    }
+
+    container.innerHTML = links
+      .map((link, index) => `
+        <button class="link" data-topic="${this.escapeHtml(link)}" data-index="${index}">
+          ${this.escapeHtml(link)}
+        </button>
+      `)
+      .join('');
+
+    // Add click event listeners
+    const buttons = container.querySelectorAll('.link');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const topic = button.dataset.topic;
+        this.dispatchEvent(new CustomEvent('select', {
+          detail: { topic },
+          bubbles: true,
+          composed: true
+        }));
+      });
+    });
+
+    this.setAttribute('active', '');
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  hide() {
+    this.removeAttribute('active');
+  }
+}
+
+// ============================================
 // Article Card Web Component
 // ============================================
 class ArticleCard extends HTMLElement {
@@ -691,6 +841,7 @@ class ArticleCard extends HTMLElement {
 customElements.define('search-bar', SearchBar);
 customElements.define('loading-spinner', LoadingSpinner);
 customElements.define('error-message', ErrorMessage);
+customElements.define('disambiguation-links', DisambiguationLinks);
 customElements.define('article-card', ArticleCard);
 
 // ============================================
@@ -701,6 +852,7 @@ class App {
     this.searchBar = document.querySelector('search-bar');
     this.loading = document.querySelector('loading-spinner');
     this.error = document.querySelector('error-message');
+    this.disambiguation = document.querySelector('disambiguation-links');
     this.article = document.querySelector('article-card');
 
     this.setupEventListeners();
@@ -715,6 +867,12 @@ class App {
     document.addEventListener('random', () => {
       this.fetchRandom();
     });
+
+    document.addEventListener('select', (e) => {
+      // Update search bar and fetch the selected topic
+      this.searchBar.setValue(e.detail.topic);
+      this.fetchArticle(e.detail.topic);
+    });
   }
 
   async init() {
@@ -726,6 +884,7 @@ class App {
     this.loading.show();
     this.error.hide();
     this.article.hide();
+    this.disambiguation.hide();
 
     const wikiUrl = `${WIKI_BASE}${encodeURIComponent(topic)}`;
     const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
@@ -743,8 +902,21 @@ class App {
         throw new Error('Article not found. Try a different topic!');
       }
 
+      // Check if this is a disambiguation page
+      const isDisambiguation = data.title.includes('disambiguation') ||
+                               (data.intro && typeof data.intro === 'string' && data.intro.includes('may refer to'));
+
       this.loading.hide();
-      this.article.setData(data, wikiUrl);
+
+      if (isDisambiguation && data.disambiguation && Array.isArray(data.disambiguation) && data.disambiguation.length > 0) {
+        // Show disambiguation links
+        this.disambiguation.setLinks(data.disambiguation, data.title.replace(' (disambiguation)', ''));
+        // Still show the article but with disambiguation context
+        this.article.setData(data, wikiUrl);
+      } else {
+        // Regular article
+        this.article.setData(data, wikiUrl);
+      }
 
     } catch (err) {
       console.error('Error:', err);
@@ -757,6 +929,7 @@ class App {
     this.loading.show();
     this.error.hide();
     this.article.hide();
+    this.disambiguation.hide();
 
     const wikiUrl = `${WIKI_BASE}Special:Random`;
     const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
