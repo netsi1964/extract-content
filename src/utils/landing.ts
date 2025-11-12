@@ -578,8 +578,14 @@ export function generateLandingPage(baseUrl: string): string {
 
       currentCurlCommand = buildCurl(url);
 
+      // First escape HTML, then apply syntax highlighting
+      const escaped = currentCurlCommand
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
       // Format with syntax highlighting
-      const formatted = currentCurlCommand
+      const formatted = escaped
         .replace(/curl/g, '<span class="curl-method">curl</span>')
         .replace(/"([^"]*)"/g, '<span class="curl-url">"$1"</span>');
 
