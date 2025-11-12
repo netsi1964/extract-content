@@ -698,13 +698,20 @@ class ArticleCard extends HTMLElement {
           font-size: 0.9rem;
           font-weight: 500;
           transition: var(--transition, all 0.3s);
-          cursor: default;
+          cursor: pointer;
+          border: 2px solid transparent;
+          user-select: none;
         }
 
         .category-tag:hover {
           background: var(--primary-color, #667eea);
           color: white;
           transform: scale(1.05);
+          border-color: var(--primary-color, #667eea);
+        }
+
+        .category-tag:active {
+          transform: scale(0.98);
         }
 
         .read-more {
@@ -789,8 +796,21 @@ class ArticleCard extends HTMLElement {
       const categoryList = Array.isArray(data.categories) ? data.categories : [data.categories];
       categories.innerHTML = categoryList
         .slice(0, 10)
-        .map(cat => `<span class="category-tag">${this.escapeHtml(cat)}</span>`)
+        .map((cat, index) => `<button class="category-tag" data-topic="${this.escapeHtml(cat)}" data-index="${index}">${this.escapeHtml(cat)}</button>`)
         .join('');
+
+      // Add click event listeners to category tags
+      const categoryButtons = categories.querySelectorAll('.category-tag');
+      categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const topic = button.dataset.topic;
+          this.dispatchEvent(new CustomEvent('select', {
+            detail: { topic },
+            bubbles: true,
+            composed: true
+          }));
+        });
+      });
     } else {
       categories.innerHTML = '';
     }
