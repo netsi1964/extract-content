@@ -1,6 +1,7 @@
 # extract-content
 
-A lightweight web scraping service that extracts data from any website using CSS selectors. Available in both Node.js and Deno versions.
+A lightweight web scraping service that extracts data from any website using CSS selectors.
+Available in both Node.js and Deno versions.
 
 ## 🚀 Quick Start
 
@@ -26,7 +27,8 @@ npm start
 ## 📖 Resources
 
 - **Interactive Demo**: [Try it on CodePen](https://codepen.io/netsi1964/pen/XEYggj/)
-- **Tutorial Series**: [Building a content extraction endpoint](https://medium.com/@netsi1964/lets-build-a-content-extract-endpoint-part-1-27d0aceda31)
+- **Tutorial Series**:
+  [Building a content extraction endpoint](https://medium.com/@netsi1964/lets-build-a-content-extract-endpoint-part-1-27d0aceda31)
 - **Example Pen**: [See it in action](https://codepen.io/netsi1964/details/mxLqPG/)
 
 ## 📡 API Endpoints
@@ -37,10 +39,10 @@ Extracts **text content** from HTML elements using CSS selectors.
 
 **Parameters:**
 
-| Parameter | Description                           | Required |
-| --------- | ------------------------------------- | -------- |
-| `from`    | URL to fetch content from             | Yes      |
-| `extract` | JSON object mapping names to selectors| Yes      |
+| Parameter | Description                            | Required |
+| --------- | -------------------------------------- | -------- |
+| `from`    | URL to fetch content from              | Yes      |
+| `extract` | JSON object mapping names to selectors | Yes      |
 
 **Response:** JSON object with extracted text
 
@@ -50,10 +52,10 @@ Extracts **HTML markup** or returns raw HTML from a page.
 
 **Parameters:**
 
-| Parameter | Description                           | Required |
-| --------- | ------------------------------------- | -------- |
-| `from`    | URL to fetch content from             | Yes      |
-| `extract` | JSON object mapping names to selectors| No       |
+| Parameter | Description                            | Required |
+| --------- | -------------------------------------- | -------- |
+| `from`    | URL to fetch content from              | Yes      |
+| `extract` | JSON object mapping names to selectors | No       |
 
 **Response:** JSON object with extracted HTML (or `{ html: rawHtml }` if no extract parameter)
 
@@ -71,9 +73,11 @@ Returns the raw HTML from the target URL (acts as a simple proxy).
 
 ## 💡 Examples
 
-All examples below use `localhost:8000`. Start the server first with `deno task dev` or `deno task start`.
+All examples below use `localhost:8000`. Start the server first with `deno task dev` or
+`deno task start`.
 
-> **Note:** The `extract` parameter must be URL-encoded. Use `encodeURIComponent()` in JavaScript or any URL encoder.
+> **Note:** The `extract` parameter must be URL-encoded. Use `encodeURIComponent()` in JavaScript or
+> any URL encoder.
 
 ### Example 1: Extract Wikipedia Article Title and First Paragraph
 
@@ -83,7 +87,7 @@ Extract the title and introduction from a Wikipedia article:
 // What we want to extract
 const extract = {
   "title": "h1",
-  "intro": ".mw-parser-output > p"
+  "intro": ".mw-parser-output > p",
 };
 
 // URL-encode it
@@ -102,7 +106,7 @@ Get repository name, description, and star count:
 const extract = {
   "repoName": "h1 strong a",
   "description": "p.f4",
-  "stars": "#repo-stars-counter-star"
+  "stars": "#repo-stars-counter-star",
 };
 ```
 
@@ -117,7 +121,7 @@ Get question title, votes, and tags:
 const extract = {
   "question": "h1 a",
   "votes": ".js-vote-count",
-  "tags": ".post-tag"
+  "tags": ".post-tag",
 };
 ```
 
@@ -131,7 +135,7 @@ Get all headlines from a news site (returns an array):
 ```javascript
 const extract = {
   "headlines": "h2 a",
-  "timestamps": "time"
+  "timestamps": "time",
 };
 ```
 
@@ -149,15 +153,13 @@ Get the actual HTML markup of specific elements:
 
 No extraction, just fetch the raw HTML:
 
-**Try it:**
-[Get raw HTML from example.com](http://localhost:8000/html?from=https://example.com)
+**Try it:** [Get raw HTML from example.com](http://localhost:8000/html?from=https://example.com)
 
 ### Example 7: Use Raw Proxy
 
 Bypass CORS and fetch any page:
 
-**Try it:**
-[Proxy example.com](http://localhost:8000/raw?from=https://example.com)
+**Try it:** [Proxy example.com](http://localhost:8000/raw?from=https://example.com)
 
 ### Example 8: Extract Reddit Post Info
 
@@ -165,7 +167,7 @@ Bypass CORS and fetch any page:
 const extract = {
   "title": "h1",
   "author": "[data-testid='post-author']",
-  "upvotes": "[data-testid='vote-button-up']"
+  "upvotes": "[data-testid='vote-button-up']",
 };
 ```
 
@@ -216,16 +218,16 @@ If a selector matches **no elements**, returns an empty string:
 function buildExtractUrl(baseUrl, from, extract) {
   const params = new URLSearchParams({
     from: from,
-    extract: JSON.stringify(extract)
+    extract: JSON.stringify(extract),
   });
   return `${baseUrl}?${params.toString()}`;
 }
 
 // Usage
 const url = buildExtractUrl(
-  'http://localhost:8000',
-  'https://github.com/denoland/deno',
-  { stars: '#repo-stars-counter-star' }
+  "http://localhost:8000",
+  "https://github.com/denoland/deno",
+  { stars: "#repo-stars-counter-star" },
 );
 ```
 
@@ -250,7 +252,8 @@ For complete documentation, see the `specs/` directory:
 
 ## 🤝 Contributing
 
-This project follows **Specification-Driven Development** (SDD). Please review the specs before contributing.
+This project follows **Specification-Driven Development** (SDD). Please review the specs before
+contributing.
 
 ## 📄 License
 
