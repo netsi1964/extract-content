@@ -6,15 +6,14 @@
   <title>Wikipedia Explorer - Extract Content Demo</title>
 </head>
 <body>
-
 <!-- ============================================ -->
 <!-- HTML - Copy this into CodePen HTML section -->
 <!-- ============================================ -->
 
 <div class="app-container">
   <header class="app-header">
-    <h1>📚 Wiki Explorer</h1>
-    <p class="subtitle">Search Wikipedia & Grokipedia simultaneously</p>
+    <h1>📚 Wikipedia Explorer</h1>
+    <p class="subtitle">Powered by extract-content API</p>
   </header>
 
   <search-bar></search-bar>
@@ -25,10 +24,7 @@
 
   <error-message></error-message>
 
-  <tabs-container>
-    <article-card slot="wikipedia" data-source="wikipedia"></article-card>
-    <article-card slot="grokipedia" data-source="grokipedia"></article-card>
-  </tabs-container>
+  <article-card></article-card>
 
   <footer class="app-footer">
     <p>Built with <a href="https://extract-content.netsi1964.deno.net/" target="_blank">extract-content API</a></p>
@@ -174,23 +170,14 @@ body {
 <script>
 const API_BASE = 'https://extract-content.netsi1964.deno.net/';
 const WIKI_BASE = 'https://en.wikipedia.org/wiki/';
-const GROKIPEDIA_BASE = 'https://grokipedia.com/page/';
 
-// Extract configuration for Wikipedia
+// Extract configuration
 const extractConfig = {
   title: "h1#firstHeading",
   intro: ".mw-parser-output > p",
   image: ".infobox img",
   categories: ".catlinks li a",
   disambiguation: ".mw-parser-output > ul > li > a"
-};
-
-// Extract configuration for Grokipedia
-const grokipediaConfig = {
-  title: "h1",
-  intro: "article p",
-  image: "article img",
-  categories: ".tags a, .categories a"
 };
 
 // ============================================
@@ -419,14 +406,14 @@ class ErrorMessage extends HTMLElement {
       <style>
         :host {
           display: none;
-          background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
-          color: #8b5a00;
-          padding: 1.25rem 1.5rem;
+          background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+          color: #1565c0;
+          padding: 1.5rem 2rem;
           border-radius: var(--radius-md, 12px);
           margin-block-end: 1.5rem;
-          animation: slideDown 0.4s ease-out;
-          box-shadow: 0 2px 8px rgba(139, 90, 0, 0.1);
-          border-left: 4px solid #ff9800;
+          animation: gentleFadeIn 0.4s ease-out;
+          box-shadow: 0 2px 12px rgba(21, 101, 192, 0.15);
+          border: 2px solid rgba(21, 101, 192, 0.2);
         }
 
         :host([active]) {
@@ -435,37 +422,52 @@ class ErrorMessage extends HTMLElement {
 
         .error-content {
           display: flex;
-          align-items: center;
-          gap: 0.75rem;
+          align-items: flex-start;
+          gap: 1rem;
         }
 
         .icon {
-          font-size: 1.5rem;
+          font-size: 2rem;
           flex-shrink: 0;
-          opacity: 0.8;
+          line-height: 1;
+        }
+
+        .text-content {
+          flex: 1;
+        }
+
+        .title {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin: 0 0 0.5rem 0;
+          color: #0d47a1;
         }
 
         p {
           margin: 0;
-          font-weight: 500;
-          line-height: 1.5;
+          font-weight: 400;
+          line-height: 1.6;
+          color: #1976d2;
         }
 
-        @keyframes slideDown {
+        @keyframes gentleFadeIn {
           from {
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(-10px) scale(0.98);
           }
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
           }
         }
       </style>
 
       <div class="error-content">
-        <span class="icon">💡</span>
-        <p id="errorText"></p>
+        <span class="icon">🔍</span>
+        <div class="text-content">
+          <div class="title">Hmm, couldn't find that</div>
+          <p id="errorText"></p>
+        </div>
       </div>
     `;
   }
@@ -842,25 +844,14 @@ class ArticleCard extends HTMLElement {
   }
 
   formatIntro(intro) {
-    const cleanText = (text) => {
-      // Remove CSS class patterns like .classname{...} and .classname
-      let cleaned = text.replace(/\.[a-zA-Z_-]+\{[^}]*\}/g, '');
-      cleaned = cleaned.replace(/\.[a-zA-Z_-]+(?=[,\s{])/g, '');
-      // Remove inline style tags
-      cleaned = cleaned.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-      // Clean up extra whitespace
-      cleaned = cleaned.replace(/\s+/g, ' ').trim();
-      return cleaned;
-    };
-
     if (Array.isArray(intro)) {
       return intro
         .slice(0, 3)
         .filter(p => p.trim().length > 0)
-        .map(p => `<p part="paragraph">${this.escapeHtml(cleanText(p))}</p>`)
+        .map(p => `<p part="paragraph">${this.escapeHtml(p)}</p>`)
         .join('');
     }
-    return `<p part="paragraph">${this.escapeHtml(cleanText(intro))}</p>`;
+    return `<p part="paragraph">${this.escapeHtml(intro)}</p>`;
   }
 
   extractImageUrl(imageHtml) {
@@ -888,165 +879,12 @@ class ArticleCard extends HTMLElement {
 }
 
 // ============================================
-// Tabs Container Web Component
-// ============================================
-class TabsContainer extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.activeTab = 'wikipedia';
-  }
-
-  connectedCallback() {
-    this.render();
-    this.setupEventListeners();
-  }
-
-  render() {
-    this.shadowRoot.innerHTML = `
-      <style>
-        :host {
-          display: none;
-          margin-block-start: 1.5rem;
-        }
-
-        :host([active]) {
-          display: block;
-        }
-
-        .tabs-header {
-          display: flex;
-          gap: 0.5rem;
-          margin-block-end: 1rem;
-          border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .tab-button {
-          flex: 1;
-          padding: 1rem 1.5rem;
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
-          border: none;
-          border-radius: var(--radius-md, 12px) var(--radius-md, 12px) 0 0;
-          font-size: 1rem;
-          font-weight: 600;
-          font-family: inherit;
-          cursor: pointer;
-          transition: var(--transition, all 0.3s);
-          position: relative;
-          backdrop-filter: blur(10px);
-        }
-
-        .tab-button:hover {
-          background: rgba(255, 255, 255, 0.15);
-          transform: translateY(-2px);
-        }
-
-        .tab-button.active {
-          background: white;
-          color: var(--primary-color, #667eea);
-          box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,0.12));
-        }
-
-        .tab-button.active::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: var(--primary-color, #667eea);
-        }
-
-        .tab-icon {
-          margin-inline-end: 0.5rem;
-        }
-
-        .tabs-content {
-          position: relative;
-        }
-
-        ::slotted(article-card) {
-          display: none;
-        }
-
-        ::slotted(article-card[active]) {
-          display: block;
-        }
-      </style>
-
-      <div class="tabs-header">
-        <button class="tab-button active" data-tab="wikipedia">
-          <span class="tab-icon">📖</span>
-          Wikipedia
-        </button>
-        <button class="tab-button" data-tab="grokipedia">
-          <span class="tab-icon">🤖</span>
-          Grokipedia
-        </button>
-      </div>
-
-      <div class="tabs-content">
-        <slot name="wikipedia"></slot>
-        <slot name="grokipedia"></slot>
-      </div>
-    `;
-  }
-
-  setupEventListeners() {
-    const buttons = this.shadowRoot.querySelectorAll('.tab-button');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        this.switchTab(button.dataset.tab);
-      });
-    });
-  }
-
-  switchTab(tabName) {
-    this.activeTab = tabName;
-
-    // Update button states
-    const buttons = this.shadowRoot.querySelectorAll('.tab-button');
-    buttons.forEach(btn => {
-      if (btn.dataset.tab === tabName) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
-    });
-
-    // Update article card visibility
-    const cards = this.querySelectorAll('article-card');
-    cards.forEach(card => {
-      if (card.getAttribute('slot') === tabName) {
-        card.setAttribute('active', '');
-      } else {
-        card.removeAttribute('active');
-      }
-    });
-  }
-
-  show() {
-    this.setAttribute('active', '');
-    // Show the active tab's content
-    this.switchTab(this.activeTab);
-  }
-
-  hide() {
-    this.removeAttribute('active');
-    const cards = this.querySelectorAll('article-card');
-    cards.forEach(card => card.hide());
-  }
-}
-
-// ============================================
 // Register Web Components
 // ============================================
 customElements.define('search-bar', SearchBar);
 customElements.define('loading-spinner', LoadingSpinner);
 customElements.define('error-message', ErrorMessage);
 customElements.define('disambiguation-links', DisambiguationLinks);
-customElements.define('tabs-container', TabsContainer);
 customElements.define('article-card', ArticleCard);
 
 // ============================================
@@ -1058,9 +896,7 @@ class App {
     this.loading = document.querySelector('loading-spinner');
     this.error = document.querySelector('error-message');
     this.disambiguation = document.querySelector('disambiguation-links');
-    this.tabsContainer = document.querySelector('tabs-container');
-    this.wikipediaCard = document.querySelector('article-card[data-source="wikipedia"]');
-    this.grokipediaCard = document.querySelector('article-card[data-source="grokipedia"]');
+    this.article = document.querySelector('article-card');
 
     this.setupEventListeners();
     this.init();
@@ -1090,94 +926,55 @@ class App {
   async fetchArticle(topic) {
     this.loading.show();
     this.error.hide();
-    this.tabsContainer.hide();
+    this.article.hide();
     this.disambiguation.hide();
 
-    // Prepare URLs for both sources
     const wikiUrl = `${WIKI_BASE}${encodeURIComponent(topic)}`;
-    const grokipediaUrl = `${GROKIPEDIA_BASE}${encodeURIComponent(topic)}`;
-
-    // Fetch from both sources in parallel
-    const [wikiResult, grokipediaResult] = await Promise.allSettled([
-      this.fetchFromSource(wikiUrl, extractConfig, 'Wikipedia'),
-      this.fetchFromSource(grokipediaUrl, grokipediaConfig, 'Grokipedia')
-    ]);
-
-    this.loading.hide();
-
-    // Check if at least one succeeded
-    const hasSuccess = wikiResult.status === 'fulfilled' || grokipediaResult.status === 'fulfilled';
-
-    if (!hasSuccess) {
-      // Both failed
-      const errors = [];
-      if (wikiResult.status === 'rejected') errors.push(`Wikipedia: ${wikiResult.reason.message}`);
-      if (grokipediaResult.status === 'rejected') errors.push(`Grokipedia: ${grokipediaResult.reason.message}`);
-      this.error.show(`Could not find "${topic}" in either source.\n${errors.join('\n')}`);
-      return;
-    }
-
-    // Handle Wikipedia result
-    if (wikiResult.status === 'fulfilled') {
-      const { data, url } = wikiResult.value;
-
-      // Check if this is a disambiguation page
-      const isDisambiguation = data.title.includes('disambiguation') ||
-                               (data.intro && typeof data.intro === 'string' && data.intro.includes('may refer to'));
-
-      if (isDisambiguation && data.disambiguation && Array.isArray(data.disambiguation) && data.disambiguation.length > 0) {
-        this.disambiguation.setLinks(data.disambiguation, data.title.replace(' (disambiguation)', ''));
-      }
-
-      this.wikipediaCard.setData(data, url);
-    } else {
-      this.wikipediaCard.setData({
-        title: 'Not Found',
-        intro: `Could not find "${topic}" on Wikipedia. ${wikiResult.reason.message}`
-      }, wikiUrl);
-    }
-
-    // Handle Grokipedia result
-    if (grokipediaResult.status === 'fulfilled') {
-      const { data, url } = grokipediaResult.value;
-      this.grokipediaCard.setData(data, url);
-    } else {
-      this.grokipediaCard.setData({
-        title: 'Not Found',
-        intro: `Could not find "${topic}" on Grokipedia. ${grokipediaResult.reason.message}`
-      }, grokipediaUrl);
-    }
-
-    // Show the tabs container
-    this.tabsContainer.show();
-  }
-
-  async fetchFromSource(url, config, sourceName) {
-    const apiUrl = `${API_BASE}?from=${encodeURIComponent(url)}&extract=${encodeURIComponent(JSON.stringify(config))}`;
+    const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
 
     try {
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        if (response.status === 404) {
+          throw new Error(`We couldn't find "${topic}". Try checking the spelling or searching for something else!`);
+        }
+        throw new Error(`Oops! Something went wrong while fetching the article. Please try again.`);
       }
 
       const data = await response.json();
 
       if (!data.title || data.title === '') {
-        throw new Error('No content found');
+        throw new Error(`No results for "${topic}". Maybe try a different search term?`);
       }
 
-      return { data, url };
+      // Check if this is a disambiguation page
+      const isDisambiguation = data.title.includes('disambiguation') ||
+                               (data.intro && typeof data.intro === 'string' && data.intro.includes('may refer to'));
+
+      this.loading.hide();
+
+      if (isDisambiguation && data.disambiguation && Array.isArray(data.disambiguation) && data.disambiguation.length > 0) {
+        // Show disambiguation links
+        this.disambiguation.setLinks(data.disambiguation, data.title.replace(' (disambiguation)', ''));
+        // Still show the article but with disambiguation context
+        this.article.setData(data, wikiUrl);
+      } else {
+        // Regular article
+        this.article.setData(data, wikiUrl);
+      }
+
     } catch (err) {
-      throw new Error(`${err.message}`);
+      console.error('Error:', err);
+      this.loading.hide();
+      this.error.show(err.message);
     }
   }
 
   async fetchRandom() {
     this.loading.show();
     this.error.hide();
-    this.tabsContainer.hide();
+    this.article.hide();
     this.disambiguation.hide();
 
     const wikiUrl = `${WIKI_BASE}Special:Random`;
@@ -1192,21 +989,20 @@ class App {
 
       const data = await response.json();
 
-      // Update search input with the article title and fetch from both sources
+      // Update search input with the article title
       if (data.title) {
-        const topic = data.title.replace(/ /g, '_');
-        this.searchBar.setValue(topic);
-        // Now fetch from both sources
-        await this.fetchArticle(topic);
-      } else {
-        this.loading.hide();
-        this.error.show('Could not fetch random article');
+        this.searchBar.setValue(data.title.replace(/ /g, '_'));
       }
+
+      const articleUrl = `${WIKI_BASE}${encodeURIComponent(data.title.replace(/ /g, '_'))}`;
+
+      this.loading.hide();
+      this.article.setData(data, articleUrl);
 
     } catch (err) {
       console.error('Error:', err);
       this.loading.hide();
-      this.error.show(`Error: ${err.message}`);
+      this.error.show(err.message);
     }
   }
 }
