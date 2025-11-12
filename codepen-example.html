@@ -628,6 +628,7 @@ class ArticleCard extends HTMLElement {
           display: none;
           animation: fadeIn 0.6s ease-in;
           container-type: inline-size;
+          margin-block-start: 1.5rem;
         }
 
         :host([active]) {
@@ -893,13 +894,16 @@ class App {
       const response = await fetch(apiUrl);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (response.status === 404) {
+          throw new Error(`Article "${topic}" not found. Please check the spelling or try a different topic.`);
+        }
+        throw new Error(`Failed to fetch article (HTTP ${response.status})`);
       }
 
       const data = await response.json();
 
       if (!data.title || data.title === '') {
-        throw new Error('Article not found. Try a different topic!');
+        throw new Error(`No article found for "${topic}". Try a different search term.`);
       }
 
       // Check if this is a disambiguation page
