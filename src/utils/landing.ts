@@ -568,7 +568,7 @@ export function generateLandingPage(baseUrl: string): string {
 
     // Build cURL command
     function buildCurl(url) {
-      return \`curl -X GET "\${url}"\`;
+      return \`curl -k -X GET "\${url}"\`;
     }
 
     // Display cURL command with syntax highlighting

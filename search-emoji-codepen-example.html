@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔍 Content Extractor - Interactive Demo</title>
+  <style>
+    /* Design Tokens */
+    :root {
+      --primary-color: #ff6b35;
+      --primary-dark: #e55a2b;
+      --secondary-color: #ff8c42;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --info-color: #ff6b35;
+
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8fafc;
+      --bg-tertiary: #f1f5f9;
+
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-tertiary: #94a3b8;
+
+      --border-color: #e2e8f0;
+      --border-focus: var(--primary-color);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+
+      --transition-fast: 150ms ease-in-out;
+      --transition-base: 200ms ease-in-out;
+      --transition-slow: 300ms ease-in-out;
+
+      --font-sans: system-ui, -apple-system, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+    }
+
+    /* Global Resets */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-block-size: 100vh;
+      padding: clamp(1rem, 3vw, 2rem);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Main Container */
+    .app-container {
+      width: 100%;
+      max-inline-size: 900px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Header */
+    .app-header {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .app-header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-block-end: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .app-header .subtitle {
+      font-size: clamp(0.875rem, 2vw, 1rem);
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    /* Content */
+    .app-content {
+      padding: 2rem;
+    }
+
+    .intro-text {
+      background: var(--bg-secondary);
+      border-left: 4px solid var(--primary-color);
+      padding: 1.25rem;
+      margin-block-end: 2rem;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .intro-text strong {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .intro-text em {
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+
+    .intro-text a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition-fast);
+    }
+
+    .intro-text a:hover {
+      border-bottom-color: var(--primary-color);
+    }
+
+    /* Footer */
+    .app-footer {
+      background: var(--bg-secondary);
+      padding: 1.5rem 2rem;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      border-block-start: 1px solid var(--border-color);
+    }
+
+    .app-footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity var(--transition-fast);
+    }
+
+    .app-footer a:hover {
+      opacity: 0.8;
+    }
+
+    /* Section Headers */
+    .section-header {
+      margin-block: 2rem 1rem;
+      padding-block-end: 0.75rem;
+      border-block-end: 2px solid var(--border-color);
+    }
+
+    .section-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+      body {
+        padding: 0.5rem;
+      }
+
+      .app-header {
+        padding: 1.5rem 1rem;
+      }
+
+      .app-content {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>🔍 Content Extractor</h1>
+      <p class="subtitle">Extract data from any URL using CSS selectors</p>
+    </header>
+
+    <div class="app-content">
+      <div class="intro-text">
+        Extract content from any URL using CSS selectors. No CORS issues, works directly from JavaScript. Choose a preset below or enter your own URL and selector to get started.
+        <br><br>
+        <strong>💡 Tip:</strong> Right-click any element → Inspect → Copy selector in DevTools.
+        <br>
+        📖 <a href="https://medium.com/@netsi1964/lets-build-a-content-extract-endpoint-part-1-27d0aceda31" target="_blank" rel="noopener">Read the full guide</a> on Medium.
+      </div>
+
+      <preset-examples></preset-examples>
+      <url-input></url-input>
+      <selector-input></selector-input>
+      <format-toggle></format-toggle>
+
+      <loading-spinner></loading-spinner>
+      <error-message></error-message>
+
+      <div class="section-header">
+        <h2>Extracted Content</h2>
+      </div>
+
+      <results-display></results-display>
+    </div>
+
+    <footer class="app-footer">
+      <p>
+        Powered by <a href="https://extract-content.netsi1964.deno.net/" target="_blank" rel="noopener">extract-content API</a>
+        • Built with Web Components & Modern CSS
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================================================
+    // Web Components
+    // ============================================================================
+
+    /**
+     * Preset Examples Component
+     */
+    class PresetExamples extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+        this.setupEventListeners();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+              margin-block-end: 1.5rem;
+            }
+
+            .presets-container {
+              background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              padding: 1.25rem;
+            }
+
+            .presets-header {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-primary, #1e293b);
+              margin-block-end: 0.75rem;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            }
+
+            .presets-grid {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 0.75rem;
+            }
+
+            .preset-btn {
+              padding: 0.75rem 1rem;
+              background: white;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-sm, 8px);
+              cursor: pointer;
+              transition: all var(--transition-fast, 150ms);
+              text-align: left;
+              font-family: var(--font-sans);
+            }
+
+            .preset-btn:hover {
+              border-color: var(--primary-color, #ff6b35);
+              box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
+              transform: translateY(-2px);
+            }
+
+            .preset-btn:active {
+              transform: translateY(0);
+            }
+
+            .preset-title {
+              font-size: 0.9rem;
+              font-weight: 600;
+              color: var(--text-primary, #1e293b);
+              margin-block-end: 0.25rem;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            }
+
+            .preset-desc {
+              font-size: 0.75rem;
+              color: var(--text-tertiary, #94a3b8);
+              line-height: 1.4;
+            }
+
+            @media (max-width: 640px) {
+              .presets-grid {
+                grid-template-columns: 1fr;
+              }
+            }
+          </style>
+
+          <div class="presets-container">
+            <div class="presets-header">
+              <span>🎯</span>
+              <span>Quick Examples</span>
+            </div>
+            <div class="presets-grid">
+              <button class="preset-btn" data-preset="emojipedia">
+                <div class="preset-title">
+                  <span>😀</span>
+                  <span>Emojipedia Search</span>
+                </div>
+                <div class="preset-desc">Search emojis by keyword</div>
+              </button>
+              <button class="preset-btn" data-preset="wiki">
+                <div class="preset-title">
+                  <span>📚</span>
+                  <span>Wikipedia Article</span>
+                </div>
+                <div class="preset-desc">Extract article content</div>
+              </button>
+              <button class="preset-btn" data-preset="news">
+                <div class="preset-title">
+                  <span>📰</span>
+                  <span>News Headlines</span>
+                </div>
+                <div class="preset-desc">Get news article titles</div>
+              </button>
+              <button class="preset-btn" data-preset="github">
+                <div class="preset-title">
+                  <span>💻</span>
+                  <span>GitHub Repos</span>
+                </div>
+                <div class="preset-desc">Extract repository names</div>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      setupEventListeners() {
+        const buttons = this.shadowRoot.querySelectorAll('.preset-btn');
+        buttons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const preset = btn.dataset.preset;
+            this.dispatchEvent(new CustomEvent('preset-selected', {
+              detail: { preset },
+              bubbles: true,
+              composed: true
+            }));
+          });
+        });
+      }
+    }
+
+    /**
+     * URL Input Component
+     */
+    class UrlInput extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+        this.setupEventListeners();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+              margin-block-end: 1rem;
+            }
+
+            .input-group {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+
+            label {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-primary, #1e293b);
+            }
+
+            .input-wrapper {
+              display: flex;
+              gap: 0.75rem;
+            }
+
+            input {
+              flex: 1;
+              padding: 0.75rem 1rem;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              font-size: 0.95rem;
+              font-family: var(--font-mono, monospace);
+              transition: all var(--transition-fast, 150ms);
+              background: var(--bg-primary, white);
+            }
+
+            input:focus {
+              outline: none;
+              border-color: var(--border-focus, #ff6b35);
+              box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+            }
+
+            input:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+              background: var(--bg-tertiary, #f1f5f9);
+            }
+
+            button {
+              padding: 0.75rem 1.5rem;
+              background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+              color: white;
+              border: none;
+              border-radius: var(--radius-md, 12px);
+              font-size: 0.95rem;
+              font-weight: 600;
+              cursor: pointer;
+              transition: all var(--transition-fast, 150ms);
+              box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+              white-space: nowrap;
+            }
+
+            button:hover:not(:disabled) {
+              transform: translateY(-2px);
+              box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
+            }
+
+            button:active:not(:disabled) {
+              transform: translateY(0);
+            }
+
+            button:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            @media (max-width: 640px) {
+              .input-wrapper {
+                flex-direction: column;
+              }
+
+              button {
+                width: 100%;
+              }
+            }
+          </style>
+
+          <div class="input-group">
+            <label for="urlInput">Target URL</label>
+            <div class="input-wrapper">
+              <input
+                type="url"
+                id="urlInput"
+                placeholder="https://example.com"
+                value="https://emojipedia.org/search/?q=apple"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+              />
+              <button id="extractBtn">Extract</button>
+            </div>
+          </div>
+        `;
+      }
+
+      setupEventListeners() {
+        const input = this.shadowRoot.querySelector('#urlInput');
+        const button = this.shadowRoot.querySelector('#extractBtn');
+
+        button.addEventListener('click', () => {
+          this.dispatchEvent(new CustomEvent('extract', {
+            detail: { url: input.value },
+            bubbles: true,
+            composed: true
+          }));
+        });
+
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            button.click();
+          }
+        });
+      }
+
+      getValue() {
+        return this.shadowRoot.querySelector('#urlInput').value;
+      }
+
+      setValue(value) {
+        this.shadowRoot.querySelector('#urlInput').value = value;
+      }
+
+      setDisabled(disabled) {
+        const input = this.shadowRoot.querySelector('#urlInput');
+        const button = this.shadowRoot.querySelector('#extractBtn');
+        input.disabled = disabled;
+        button.disabled = disabled;
+      }
+    }
+
+    /**
+     * Selector Input Component
+     */
+    class SelectorInput extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+              margin-block-end: 1rem;
+            }
+
+            .input-group {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+
+            label {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-primary, #1e293b);
+            }
+
+            .help-text {
+              font-size: 0.8rem;
+              color: var(--text-tertiary, #94a3b8);
+              margin-block-start: -0.25rem;
+            }
+
+            input {
+              padding: 0.75rem 1rem;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              font-size: 0.95rem;
+              font-family: var(--font-mono, monospace);
+              transition: all var(--transition-fast, 150ms);
+              background: var(--bg-primary, white);
+            }
+
+            input:focus {
+              outline: none;
+              border-color: var(--border-focus, #ff6b35);
+              box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+            }
+
+            input:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+              background: var(--bg-tertiary, #f1f5f9);
+            }
+          </style>
+
+          <div class="input-group">
+            <label for="selectorInput">CSS Selector</label>
+            <p class="help-text">Specify which elements to extract (e.g., "h2 a, p")</p>
+            <input
+              type="text"
+              id="selectorInput"
+              placeholder="e.g., .content p, h2"
+              value="a[class*='EmojisList_emojis-list-item']"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
+        `;
+      }
+
+      getValue() {
+        return this.shadowRoot.querySelector('#selectorInput').value;
+      }
+
+      setValue(value) {
+        this.shadowRoot.querySelector('#selectorInput').value = value;
+      }
+
+      setDisabled(disabled) {
+        this.shadowRoot.querySelector('#selectorInput').disabled = disabled;
+      }
+    }
+
+    /**
+     * Format Toggle Component
+     */
+    class FormatToggle extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+        this.setupEventListeners();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+              margin-block-end: 1.5rem;
+            }
+
+            .toggle-group {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+
+            label {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-primary, #1e293b);
+            }
+
+            .toggle-options {
+              display: flex;
+              gap: 1rem;
+              padding: 1rem;
+              background: var(--bg-secondary, #f8fafc);
+              border-radius: var(--radius-md, 12px);
+              border: 1px solid var(--border-color, #e2e8f0);
+            }
+
+            .radio-option {
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+              cursor: pointer;
+              padding: 0.5rem 1rem;
+              border-radius: var(--radius-sm, 8px);
+              transition: all var(--transition-fast, 150ms);
+            }
+
+            .radio-option:hover {
+              background: rgba(255, 107, 53, 0.1);
+            }
+
+            .radio-option input {
+              cursor: pointer;
+              width: 1.1rem;
+              height: 1.1rem;
+              accent-color: var(--primary-color, #ff6b35);
+            }
+
+            .radio-option span {
+              font-size: 0.95rem;
+              color: var(--text-secondary, #475569);
+              font-weight: 500;
+            }
+
+            @media (max-width: 640px) {
+              .toggle-options {
+                flex-direction: column;
+                gap: 0.5rem;
+              }
+            }
+          </style>
+
+          <div class="toggle-group">
+            <label>Output Format</label>
+            <div class="toggle-options">
+              <label class="radio-option">
+                <input type="radio" name="format" value="text" checked />
+                <span>📝 Text Content</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="format" value="html" />
+                <span>🏷️ HTML Markup</span>
+              </label>
+            </div>
+          </div>
+        `;
+      }
+
+      setupEventListeners() {
+        const radios = this.shadowRoot.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+          radio.addEventListener('change', () => {
+            this.dispatchEvent(new CustomEvent('formatchange', {
+              detail: { format: radio.value },
+              bubbles: true,
+              composed: true
+            }));
+          });
+        });
+      }
+
+      getValue() {
+        const checked = this.shadowRoot.querySelector('input[type="radio"]:checked');
+        return checked ? checked.value : 'text';
+      }
+
+      setDisabled(disabled) {
+        const radios = this.shadowRoot.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => radio.disabled = disabled);
+      }
+    }
+
+    /**
+     * Loading Spinner Component
+     */
+    class LoadingSpinner extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: none;
+              flex-direction: column;
+              align-items: center;
+              gap: 1rem;
+              padding: 2rem;
+              animation: fadeIn 0.3s ease-out;
+            }
+
+            :host([visible]) {
+              display: flex;
+            }
+
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
+            }
+
+            .spinner {
+              width: 48px;
+              height: 48px;
+              border: 4px solid var(--bg-tertiary, #f1f5f9);
+              border-top-color: var(--primary-color, #ff6b35);
+              border-radius: 50%;
+              animation: spin 0.8s linear infinite;
+            }
+
+            @keyframes spin {
+              to { transform: rotate(360deg); }
+            }
+
+            .text {
+              font-size: 0.95rem;
+              color: var(--text-secondary, #475569);
+              font-weight: 500;
+            }
+          </style>
+
+          <div class="spinner"></div>
+          <p class="text">Extracting content...</p>
+        `;
+      }
+
+      show() {
+        this.setAttribute('visible', '');
+      }
+
+      hide() {
+        this.removeAttribute('visible');
+      }
+    }
+
+    /**
+     * Error Message Component
+     */
+    class ErrorMessage extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: none;
+              background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+              color: #991b1b;
+              padding: 1.5rem 2rem;
+              border-radius: var(--radius-md, 12px);
+              margin-block-end: 1.5rem;
+              animation: gentleFadeIn 0.4s ease-out;
+              box-shadow: 0 2px 12px rgba(153, 27, 27, 0.15);
+              border: 2px solid rgba(153, 27, 27, 0.2);
+            }
+
+            :host([visible]) {
+              display: block;
+            }
+
+            @keyframes gentleFadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.98);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+              }
+            }
+
+            .error-content {
+              display: flex;
+              align-items: flex-start;
+              gap: 1rem;
+            }
+
+            .icon {
+              font-size: 2rem;
+              flex-shrink: 0;
+              line-height: 1;
+            }
+
+            .title {
+              font-size: 1.1rem;
+              font-weight: 600;
+              margin: 0 0 0.5rem 0;
+              color: #7f1d1d;
+            }
+
+            p {
+              margin: 0;
+              line-height: 1.6;
+            }
+          </style>
+
+          <div class="error-content">
+            <span class="icon">⚠️</span>
+            <div class="text-content">
+              <div class="title">Oops! Something went wrong</div>
+              <p id="errorText"></p>
+            </div>
+          </div>
+        `;
+      }
+
+      show(message) {
+        this.setAttribute('visible', '');
+        this.shadowRoot.querySelector('#errorText').textContent = message;
+      }
+
+      hide() {
+        this.removeAttribute('visible');
+      }
+    }
+
+    /**
+     * Results Display Component
+     */
+    class ResultsDisplay extends HTMLElement {
+      constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+      }
+
+      connectedCallback() {
+        this.render();
+      }
+
+      render() {
+        this.shadowRoot.innerHTML = `
+          <style>
+            :host {
+              display: block;
+            }
+
+            textarea {
+              width: 100%;
+              min-height: 400px;
+              padding: 1.25rem;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              font-family: var(--font-mono, monospace);
+              font-size: 0.9rem;
+              line-height: 1.6;
+              resize: vertical;
+              transition: all var(--transition-fast, 150ms);
+              background: var(--bg-secondary, #f8fafc);
+            }
+
+            textarea:focus {
+              outline: none;
+              border-color: var(--border-focus, #ff6b35);
+              box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+              background: var(--bg-primary, white);
+            }
+
+            textarea:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            .results-container {
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
+            }
+
+            .result-section {
+              display: flex;
+              flex-direction: column;
+              gap: 0.5rem;
+            }
+
+            .result-label {
+              font-size: 0.875rem;
+              font-weight: 600;
+              color: var(--text-secondary, #475569);
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            }
+
+            .html-display {
+              width: 100%;
+              min-height: 300px;
+              padding: 1.25rem;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              background: var(--bg-primary, white);
+              overflow: auto;
+              line-height: 1.6;
+            }
+
+            .raw-output {
+              width: 100%;
+              min-height: 200px;
+              padding: 1.25rem;
+              border: 2px solid var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              font-family: var(--font-mono, monospace);
+              font-size: 0.85rem;
+              line-height: 1.6;
+              background: var(--bg-secondary, #f8fafc);
+              overflow: auto;
+              white-space: pre-wrap;
+              word-break: break-all;
+            }
+
+            .placeholder {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              gap: 1rem;
+              padding: 3rem 2rem;
+              background: var(--bg-secondary, #f8fafc);
+              border: 2px dashed var(--border-color, #e2e8f0);
+              border-radius: var(--radius-md, 12px);
+              text-align: center;
+            }
+
+            .placeholder-icon {
+              font-size: 3rem;
+              opacity: 0.5;
+            }
+
+            .placeholder-text {
+              font-size: 0.95rem;
+              color: var(--text-tertiary, #94a3b8);
+            }
+
+            .hidden {
+              display: none;
+            }
+          </style>
+
+          <div class="placeholder">
+            <div class="placeholder-icon">📋</div>
+            <p class="placeholder-text">
+              Enter a URL and CSS selector above, then click "Extract" to see the results here.
+            </p>
+          </div>
+
+          <!-- Text mode: just textarea -->
+          <textarea class="hidden" readonly></textarea>
+
+          <!-- HTML mode: rendered + raw -->
+          <div class="results-container hidden">
+            <div class="result-section">
+              <div class="result-label">
+                <span>🎨</span>
+                <span>Rendered HTML</span>
+              </div>
+              <div class="html-display"></div>
+            </div>
+
+            <div class="result-section">
+              <div class="result-label">
+                <span>📝</span>
+                <span>Raw Output</span>
+              </div>
+              <div class="raw-output"></div>
+            </div>
+          </div>
+        `;
+      }
+
+      showResults(content, isHTML = false) {
+        const placeholder = this.shadowRoot.querySelector('.placeholder');
+        const textarea = this.shadowRoot.querySelector('textarea');
+        const resultsContainer = this.shadowRoot.querySelector('.results-container');
+        const htmlDisplay = this.shadowRoot.querySelector('.html-display');
+        const rawOutput = this.shadowRoot.querySelector('.raw-output');
+
+        placeholder.classList.add('hidden');
+
+        if (isHTML) {
+          // Show both rendered HTML and raw output
+          textarea.classList.add('hidden');
+          resultsContainer.classList.remove('hidden');
+          htmlDisplay.innerHTML = content;
+          rawOutput.textContent = content;
+        } else {
+          // Show just the textarea for text content
+          resultsContainer.classList.add('hidden');
+          textarea.classList.remove('hidden');
+          textarea.value = content;
+        }
+      }
+
+      showPlaceholder() {
+        const placeholder = this.shadowRoot.querySelector('.placeholder');
+        const textarea = this.shadowRoot.querySelector('textarea');
+        const resultsContainer = this.shadowRoot.querySelector('.results-container');
+        const htmlDisplay = this.shadowRoot.querySelector('.html-display');
+        const rawOutput = this.shadowRoot.querySelector('.raw-output');
+
+        placeholder.classList.remove('hidden');
+        textarea.classList.add('hidden');
+        resultsContainer.classList.add('hidden');
+        textarea.value = '';
+        htmlDisplay.innerHTML = '';
+        rawOutput.textContent = '';
+      }
+
+      setDisabled(disabled) {
+        this.shadowRoot.querySelector('textarea').disabled = disabled;
+      }
+    }
+
+    // ============================================================================
+    // Register Web Components
+    // ============================================================================
+
+    customElements.define('preset-examples', PresetExamples);
+    customElements.define('url-input', UrlInput);
+    customElements.define('selector-input', SelectorInput);
+    customElements.define('format-toggle', FormatToggle);
+    customElements.define('loading-spinner', LoadingSpinner);
+    customElements.define('error-message', ErrorMessage);
+    customElements.define('results-display', ResultsDisplay);
+
+    // ============================================================================
+    // Main Application Logic
+    // ============================================================================
+
+    class App {
+      constructor() {
+        this.presetExamples = document.querySelector('preset-examples');
+        this.urlInput = document.querySelector('url-input');
+        this.selectorInput = document.querySelector('selector-input');
+        this.formatToggle = document.querySelector('format-toggle');
+        this.loading = document.querySelector('loading-spinner');
+        this.error = document.querySelector('error-message');
+        this.results = document.querySelector('results-display');
+
+        this.presets = {
+          emojipedia: {
+            url: 'https://emojipedia.org/search/?q=apple',
+            selector: 'a[class*="EmojisList_emojis-list-item"]',
+            format: 'text'
+          },
+          wiki: {
+            url: 'https://en.wikipedia.org/wiki/JavaScript',
+            selector: '#mw-content-text p',
+            format: 'text'
+          },
+          news: {
+            url: 'https://news.ycombinator.com/',
+            selector: '.titleline > a',
+            format: 'text'
+          },
+          github: {
+            url: 'https://github.com/trending',
+            selector: 'h2.h3 a',
+            format: 'text'
+          }
+        };
+
+        this.setupEventListeners();
+        this.handleInitialLoad();
+      }
+
+      setupEventListeners() {
+        // Listen for preset selection
+        this.presetExamples.addEventListener('preset-selected', (e) => {
+          this.loadPreset(e.detail.preset);
+        });
+
+        // Listen for extract button click
+        this.urlInput.addEventListener('extract', () => {
+          this.extractContent();
+        });
+      }
+
+      loadPreset(presetName) {
+        const preset = this.presets[presetName];
+        if (preset) {
+          this.urlInput.setValue(preset.url);
+          this.selectorInput.setValue(preset.selector);
+          this.error.hide();
+          this.results.showPlaceholder();
+        }
+      }
+
+      async extractContent() {
+        const url = this.urlInput.getValue();
+        const selector = this.selectorInput.getValue();
+        const format = this.formatToggle.getValue();
+
+        // Validation
+        if (!url) {
+          this.error.show('Please enter a URL to extract content from.');
+          return;
+        }
+
+        try {
+          // Update UI state
+          this.setLoading(true);
+          this.error.hide();
+
+          // Build API request
+          const apiUrl = this.buildApiUrl(url, selector, format);
+
+          // Fetch data
+          const response = await fetch(apiUrl);
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          // Display results
+          this.displayResults(data, selector, format);
+
+        } catch (err) {
+          console.error('Extract error:', err);
+          this.error.show(
+            `Failed to extract content: ${err.message}. Please check the URL and try again.`
+          );
+          this.results.showPlaceholder();
+        } finally {
+          this.setLoading(false);
+        }
+      }
+
+      buildApiUrl(url, selector, format) {
+        const baseUrl = 'https://extract-content.netsi1964.deno.net';
+        const endpoint = format === 'html' ? '/html' : '';
+
+        const params = new URLSearchParams();
+        params.set('from', url);
+
+        if (selector.trim()) {
+          params.set('extract', JSON.stringify({ value: selector }));
+        }
+
+        if (format === 'html') {
+          params.set('type', 'html');
+        }
+
+        return `${baseUrl}${endpoint}?${params.toString()}`;
+      }
+
+      displayResults(data, selector, format) {
+        let output;
+        const isHTML = format === 'html';
+
+        if (!selector.trim()) {
+          // No selector - show raw HTML
+          output = data.html || JSON.stringify(data, null, 2);
+        } else {
+          // Has selector - show extracted content
+          if (isHTML) {
+            // For HTML format, show the actual HTML content
+            output = data.value || JSON.stringify(data, null, 2);
+          } else {
+            // For text format, show as JSON
+            output = JSON.stringify(data.value || data, null, 2);
+          }
+        }
+
+        this.results.showResults(output, isHTML);
+      }
+
+      setLoading(isLoading) {
+        if (isLoading) {
+          this.loading.show();
+          this.urlInput.setDisabled(true);
+          this.selectorInput.setDisabled(true);
+          this.formatToggle.setDisabled(true);
+          this.results.setDisabled(true);
+        } else {
+          this.loading.hide();
+          this.urlInput.setDisabled(false);
+          this.selectorInput.setDisabled(false);
+          this.formatToggle.setDisabled(false);
+          this.results.setDisabled(false);
+        }
+      }
+
+      handleInitialLoad() {
+        // Check for URL parameters
+        const params = new URLSearchParams(window.location.search);
+
+        if (params.has('from')) {
+          // Auto-trigger extraction if URL params present
+          setTimeout(() => {
+            this.extractContent();
+          }, 100);
+        }
+      }
+    }
+
+    // Initialize app when DOM is ready
+    new App();
+  </script>
+</body>
+</html>
