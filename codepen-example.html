@@ -407,13 +407,14 @@ class ErrorMessage extends HTMLElement {
       <style>
         :host {
           display: none;
-          background: var(--error-color, #ff4757);
-          color: white;
+          background: linear-gradient(135deg, #fff4e6 0%, #ffe8cc 100%);
+          color: #8b5a00;
           padding: 1.25rem 1.5rem;
           border-radius: var(--radius-md, 12px);
           margin-block-end: 1.5rem;
-          animation: shake 0.5s ease-in-out;
-          box-shadow: var(--shadow-md, 0 4px 16px rgba(0,0,0,0.12));
+          animation: slideDown 0.4s ease-out;
+          box-shadow: 0 2px 8px rgba(139, 90, 0, 0.1);
+          border-left: 4px solid #ff9800;
         }
 
         :host([active]) {
@@ -429,22 +430,29 @@ class ErrorMessage extends HTMLElement {
         .icon {
           font-size: 1.5rem;
           flex-shrink: 0;
+          opacity: 0.8;
         }
 
         p {
           margin: 0;
           font-weight: 500;
+          line-height: 1.5;
         }
 
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-10px); }
-          75% { transform: translateX(10px); }
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       </style>
 
       <div class="error-content">
-        <span class="icon">⚠️</span>
+        <span class="icon">💡</span>
         <p id="errorText"></p>
       </div>
     `;
@@ -822,14 +830,25 @@ class ArticleCard extends HTMLElement {
   }
 
   formatIntro(intro) {
+    const cleanText = (text) => {
+      // Remove CSS class patterns like .classname{...} and .classname
+      let cleaned = text.replace(/\.[a-zA-Z_-]+\{[^}]*\}/g, '');
+      cleaned = cleaned.replace(/\.[a-zA-Z_-]+(?=[,\s{])/g, '');
+      // Remove inline style tags
+      cleaned = cleaned.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+      // Clean up extra whitespace
+      cleaned = cleaned.replace(/\s+/g, ' ').trim();
+      return cleaned;
+    };
+
     if (Array.isArray(intro)) {
       return intro
         .slice(0, 3)
         .filter(p => p.trim().length > 0)
-        .map(p => `<p part="paragraph">${this.escapeHtml(p)}</p>`)
+        .map(p => `<p part="paragraph">${this.escapeHtml(cleanText(p))}</p>`)
         .join('');
     }
-    return `<p part="paragraph">${this.escapeHtml(intro)}</p>`;
+    return `<p part="paragraph">${this.escapeHtml(cleanText(intro))}</p>`;
   }
 
   extractImageUrl(imageHtml) {
