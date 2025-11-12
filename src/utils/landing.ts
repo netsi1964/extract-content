@@ -159,6 +159,59 @@ export function generateLandingPage(baseUrl: string): string {
     .error.active {
       display: block;
     }
+    .curl-container {
+      background: #2d2d2d;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 20px;
+      display: none;
+      position: relative;
+    }
+    .curl-container.active {
+      display: block;
+    }
+    .curl-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .curl-title {
+      color: #f8f8f2;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+    .copy-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85em;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      background: #5568d3;
+    }
+    .copy-btn.copied {
+      background: #28a745;
+    }
+    .curl-code {
+      color: #f8f8f2;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    .curl-code .curl-method {
+      color: #a6e22e;
+    }
+    .curl-code .curl-url {
+      color: #e6db74;
+    }
     .example {
       background: #e3f2fd;
       padding: 20px;
@@ -258,7 +311,7 @@ export function generateLandingPage(baseUrl: string): string {
 <body>
   <header>
     <h1>🚀 extract-content</h1>
-    <p class="subtitle">A lightweight web scraping API that extracts data from any website using CSS selectors</p>
+    <p class="subtitle">A lightweight web scraping API powered by Deno that extracts data from any website using CSS selectors</p>
   </header>
 
   <div class="section playground">
@@ -280,11 +333,31 @@ export function generateLandingPage(baseUrl: string): string {
           placeholder='{"title": "h1", "intro": ".mw-parser-output > p"}'
         >{"title": "h1", "intro": ".mw-parser-output > p"}</textarea>
       </div>
+      <div class="form-group">
+        <label>Response Format:</label>
+        <div style="display: flex; gap: 20px; padding: 10px 0;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="radio" name="format" value="text" checked style="width: auto; padding: 0; cursor: pointer;">
+            <span>📝 Text (JSON)</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="radio" name="format" value="html" style="width: auto; padding: 0; cursor: pointer;">
+            <span>🏷️ HTML Markup</span>
+          </label>
+        </div>
+      </div>
       <button type="submit" class="btn" id="tryBtn">Try It Now</button>
       <button type="button" class="btn btn-secondary" onclick="clearPlayground()">Clear</button>
       <div class="loading" id="playgroundLoading">⏳ Fetching data...</div>
       <div class="error" id="playgroundError"></div>
     </form>
+    <div class="curl-container" id="playgroundCurl">
+      <div class="curl-header">
+        <div class="curl-title">📋 cURL Command:</div>
+        <button class="copy-btn" id="copyCurlBtn" onclick="copyCurl()">Copy</button>
+      </div>
+      <div class="curl-code" id="curlCode"></div>
+    </div>
     <div class="response-container" id="playgroundResponse">
       <h3 style="color: #333;">Response:</h3>
       <div class="response-box" id="playgroundResponseBox"></div>
@@ -491,6 +564,47 @@ export function generateLandingPage(baseUrl: string): string {
   <script>
     const BASE_URL = '${baseUrl}';
 
+    let currentCurlCommand = '';
+
+    // Build cURL command
+    function buildCurl(url) {
+      return \`curl -X GET "\${url}"\`;
+    }
+
+    // Display cURL command with syntax highlighting
+    function displayCurl(url) {
+      const curlContainer = document.getElementById('playgroundCurl');
+      const curlCode = document.getElementById('curlCode');
+
+      currentCurlCommand = buildCurl(url);
+
+      // Format with syntax highlighting
+      const formatted = currentCurlCommand
+        .replace(/curl/g, '<span class="curl-method">curl</span>')
+        .replace(/"([^"]*)"/g, '<span class="curl-url">"$1"</span>');
+
+      curlCode.innerHTML = formatted;
+      curlContainer.classList.add('active');
+    }
+
+    // Copy cURL to clipboard
+    function copyCurl() {
+      navigator.clipboard.writeText(currentCurlCommand).then(() => {
+        const btn = document.getElementById('copyCurlBtn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard');
+      });
+    }
+
     // Format JSON with syntax highlighting
     function formatJSON(obj) {
       const json = JSON.stringify(obj, null, 2);
@@ -565,6 +679,7 @@ export function generateLandingPage(baseUrl: string): string {
 
       const fromUrl = document.getElementById('fromUrl').value;
       const extractJson = document.getElementById('extractJson').value;
+      const format = document.querySelector('input[name="format"]:checked').value;
 
       if (!fromUrl || !extractJson) {
         const error = document.getElementById('playgroundError');
@@ -575,7 +690,13 @@ export function generateLandingPage(baseUrl: string): string {
 
       try {
         const extract = JSON.parse(extractJson);
-        const url = buildUrl(fromUrl, extract);
+        const endpoint = format === 'html' ? '/html' : '/';
+        const url = buildUrl(fromUrl, extract, endpoint);
+
+        // Display cURL command
+        displayCurl(url);
+
+        // Fetch data
         await fetchData(url, 'playgroundResponseBox', 'playgroundLoading', 'playgroundError');
       } catch (err) {
         const error = document.getElementById('playgroundError');
@@ -588,8 +709,11 @@ export function generateLandingPage(baseUrl: string): string {
     function clearPlayground() {
       document.getElementById('fromUrl').value = '';
       document.getElementById('extractJson').value = '';
+      document.querySelector('input[name="format"][value="text"]').checked = true;
+      document.getElementById('playgroundCurl').classList.remove('active');
       document.getElementById('playgroundResponse').classList.remove('active');
       document.getElementById('playgroundError').classList.remove('active');
+      currentCurlCommand = '';
     }
   </script>
 </body>
