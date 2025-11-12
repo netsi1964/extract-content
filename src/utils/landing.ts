@@ -14,7 +14,7 @@ export function generateLandingPage(baseUrl: string): string {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       line-height: 1.6;
       color: #333;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 20px;
       background: #f5f5f5;
@@ -48,12 +48,129 @@ export function generateLandingPage(baseUrl: string): string {
       margin: 20px 0 10px 0;
       font-size: 1.3em;
     }
-    .endpoint {
-      background: #f8f9fa;
-      padding: 15px;
-      margin: 15px 0;
-      border-left: 4px solid #667eea;
+    .playground {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
       border-radius: 5px;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      transition: border-color 0.3s;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 10px;
+    }
+    .btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .btn-small {
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+    .btn-secondary {
+      background: #764ba2;
+    }
+    .btn-secondary:hover {
+      background: #5a3680;
+    }
+    .response-container {
+      margin-top: 20px;
+      display: none;
+    }
+    .response-container.active {
+      display: block;
+    }
+    .response-box {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 5px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .response-box pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .loading {
+      display: none;
+      color: #667eea;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    .loading.active {
+      display: block;
+    }
+    .error {
+      background: #fee;
+      border-left: 4px solid #f44;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 5px;
+      color: #c33;
+      display: none;
+    }
+    .error.active {
+      display: block;
+    }
+    .example {
+      background: #e3f2fd;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 5px;
+      border-left: 4px solid #2196f3;
+    }
+    .example-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
     }
     code {
       background: #f4f4f4;
@@ -74,26 +191,6 @@ export function generateLandingPage(baseUrl: string): string {
       background: none;
       color: #f8f8f2;
       padding: 0;
-    }
-    .example {
-      background: #e3f2fd;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 5px;
-      border-left: 4px solid #2196f3;
-    }
-    .try-link {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 8px 16px;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-top: 10px;
-      transition: background 0.3s;
-    }
-    .try-link:hover {
-      background: #5568d3;
     }
     table {
       width: 100%;
@@ -119,6 +216,13 @@ export function generateLandingPage(baseUrl: string): string {
       font-weight: bold;
     }
     .badge.optional { background: #6c757d; }
+    .endpoint {
+      background: #f8f9fa;
+      padding: 15px;
+      margin: 15px 0;
+      border-left: 4px solid #667eea;
+      border-radius: 5px;
+    }
     footer {
       text-align: center;
       padding: 30px;
@@ -144,6 +248,11 @@ export function generateLandingPage(baseUrl: string): string {
     .resource-link:hover {
       background: #5a3680;
     }
+    .json-key { color: #a6e22e; }
+    .json-string { color: #e6db74; }
+    .json-number { color: #ae81ff; }
+    .json-boolean { color: #66d9ef; }
+    .json-null { color: #f92672; }
   </style>
 </head>
 <body>
@@ -151,6 +260,36 @@ export function generateLandingPage(baseUrl: string): string {
     <h1>🚀 extract-content</h1>
     <p class="subtitle">A lightweight web scraping API that extracts data from any website using CSS selectors</p>
   </header>
+
+  <div class="section playground">
+    <h2 style="color: #333; border-color: #333;">🎮 Interactive Playground</h2>
+    <form id="playgroundForm">
+      <div class="form-group">
+        <label for="fromUrl">From URL:</label>
+        <input
+          type="text"
+          id="fromUrl"
+          placeholder="https://en.wikipedia.org/wiki/Web_scraping"
+          value="https://en.wikipedia.org/wiki/Deno_(software)"
+        >
+      </div>
+      <div class="form-group">
+        <label for="extractJson">Extract (JSON):</label>
+        <textarea
+          id="extractJson"
+          placeholder='{"title": "h1", "intro": ".mw-parser-output > p"}'
+        >{"title": "h1", "intro": ".mw-parser-output > p"}</textarea>
+      </div>
+      <button type="submit" class="btn" id="tryBtn">Try It Now</button>
+      <button type="button" class="btn btn-secondary" onclick="clearPlayground()">Clear</button>
+      <div class="loading" id="playgroundLoading">⏳ Fetching data...</div>
+      <div class="error" id="playgroundError"></div>
+    </form>
+    <div class="response-container" id="playgroundResponse">
+      <h3 style="color: #333;">Response:</h3>
+      <div class="response-box" id="playgroundResponseBox"></div>
+    </div>
+  </div>
 
   <div class="section">
     <h2>📖 Resources</h2>
@@ -231,96 +370,91 @@ export function generateLandingPage(baseUrl: string): string {
     <h2>💡 Examples</h2>
 
     <div class="example">
-      <h3>Example 1: Extract Wikipedia Article Title and First Paragraph</h3>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 1: Wikipedia Article</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(1, 'https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', intro: '.mw-parser-output > p'})">Try It</button>
+      </div>
       <pre><code>const extract = {
   "title": "h1",
   "intro": ".mw-parser-output > p"
 };</code></pre>
-      <a href="${baseUrl}/?from=https://en.wikipedia.org/wiki/Deno_(software)&extract=%7B%22title%22%3A%22h1%22%2C%22intro%22%3A%22.mw-parser-output%20%3E%20p%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="response-container" id="response1">
+        <div class="response-box" id="responseBox1"></div>
+      </div>
     </div>
 
     <div class="example">
-      <h3>Example 2: Extract GitHub Repository Info</h3>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 2: GitHub Repository</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(2, 'https://github.com/denoland/deno', {repoName: 'h1 strong a', description: 'p.f4', stars: '#repo-stars-counter-star'})">Try It</button>
+      </div>
       <pre><code>const extract = {
   "repoName": "h1 strong a",
   "description": "p.f4",
   "stars": "#repo-stars-counter-star"
 };</code></pre>
-      <a href="${baseUrl}/?from=https://github.com/denoland/deno&extract=%7B%22repoName%22%3A%22h1%20strong%20a%22%2C%22description%22%3A%22p.f4%22%2C%22stars%22%3A%22%23repo-stars-counter-star%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="response-container" id="response2">
+        <div class="response-box" id="responseBox2"></div>
+      </div>
     </div>
 
     <div class="example">
-      <h3>Example 3: Extract Stack Overflow Question</h3>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 3: Stack Overflow</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(3, 'https://stackoverflow.com/questions/1', {question: 'h1 a', votes: '.js-vote-count', tags: '.post-tag'})">Try It</button>
+      </div>
       <pre><code>const extract = {
   "question": "h1 a",
   "votes": ".js-vote-count",
   "tags": ".post-tag"
 };</code></pre>
-      <a href="${baseUrl}/?from=https://stackoverflow.com/questions/1&extract=%7B%22question%22%3A%22h1%20a%22%2C%22votes%22%3A%22.js-vote-count%22%2C%22tags%22%3A%22.post-tag%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="response-container" id="response3">
+        <div class="response-box" id="responseBox3"></div>
+      </div>
     </div>
 
     <div class="example">
-      <h3>Example 4: Extract Hacker News Headlines</h3>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 4: Hacker News</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(4, 'https://news.ycombinator.com', {headlines: '.titleline > a', scores: '.score'})">Try It</button>
+      </div>
       <pre><code>const extract = {
   "headlines": ".titleline > a",
   "scores": ".score"
 };</code></pre>
-      <a href="${baseUrl}/?from=https://news.ycombinator.com&extract=%7B%22headlines%22%3A%22.titleline%20%3E%20a%22%2C%22scores%22%3A%22.score%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="response-container" id="response4">
+        <div class="response-box" id="responseBox4"></div>
+      </div>
     </div>
 
     <div class="example">
-      <h3>Example 5: Extract Reddit Post Titles</h3>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 5: Reddit Posts</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(5, 'https://old.reddit.com/r/programming', {titles: '.title > a', domain: '.domain'})">Try It</button>
+      </div>
       <pre><code>const extract = {
   "titles": ".title > a",
   "domain": ".domain"
 };</code></pre>
-      <a href="${baseUrl}/?from=https://old.reddit.com/r/programming&extract=%7B%22titles%22%3A%22.title%20%3E%20a%22%2C%22domain%22%3A%22.domain%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="response-container" id="response5">
+        <div class="response-box" id="responseBox5"></div>
+      </div>
     </div>
 
     <div class="example">
-      <h3>Example 6: Extract HTML Instead of Text</h3>
-      <p>Get the actual HTML markup of specific elements:</p>
-      <a href="${baseUrl}/html?from=https://en.wikipedia.org/wiki/Web_scraping&extract=%7B%22infobox%22%3A%22.infobox%22%2C%22firstPara%22%3A%22.mw-parser-output%20%3E%20p%22%7D" class="try-link" target="_blank">Try it →</a>
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 6: Extract HTML Markup</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(6, 'https://en.wikipedia.org/wiki/Web_scraping', {infobox: '.infobox', firstPara: '.mw-parser-output > p'}, '/html')">Try It</button>
+      </div>
+      <p>Get the actual HTML markup instead of text:</p>
+      <pre><code>const extract = {
+  "infobox": ".infobox",
+  "firstPara": ".mw-parser-output > p"
+};</code></pre>
+      <div class="response-container" id="response6">
+        <div class="response-box" id="responseBox6"></div>
+      </div>
     </div>
-
-    <div class="example">
-      <h3>Example 7: Get Entire Page HTML</h3>
-      <p>No extraction, just fetch the raw HTML:</p>
-      <a href="${baseUrl}/html?from=https://example.com" class="try-link" target="_blank">Try it →</a>
-    </div>
-
-    <div class="example">
-      <h3>Example 8: Use Raw Proxy</h3>
-      <p>Bypass CORS and fetch any page:</p>
-      <a href="${baseUrl}/raw?from=https://example.com" class="try-link" target="_blank">Try it →</a>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>🛠️ Building Extract URLs</h2>
-
-    <h3>JavaScript Helper Function</h3>
-    <pre><code>function buildExtractUrl(baseUrl, from, extract) {
-  const params = new URLSearchParams({
-    from: from,
-    extract: JSON.stringify(extract)
-  });
-  return \`\${baseUrl}?\${params.toString()}\`;
-}
-
-// Usage
-const url = buildExtractUrl(
-  '${baseUrl}',
-  'https://github.com/denoland/deno',
-  { stars: '#repo-stars-counter-star' }
-);</code></pre>
-
-    <h3>Command Line (curl)</h3>
-    <pre><code># Extract title from Wikipedia
-curl "${baseUrl}/?from=https://en.wikipedia.org/wiki/Deno_(software)&extract=%7B%22title%22%3A%22h1%22%7D"
-
-# Get raw HTML
-curl "${baseUrl}/raw?from=https://example.com"</code></pre>
   </div>
 
   <div class="section">
@@ -353,6 +487,111 @@ curl "${baseUrl}/raw?from=https://example.com"</code></pre>
     <p>Created by <a href="https://twitter.com/netsi1964" target="_blank">@netsi1964</a>, March 2018</p>
     <p>Powered by Deno 🦕 | <a href="https://github.com/netsi1964/extract-content" target="_blank">View on GitHub</a></p>
   </footer>
+
+  <script>
+    const BASE_URL = '${baseUrl}';
+
+    // Format JSON with syntax highlighting
+    function formatJSON(obj) {
+      const json = JSON.stringify(obj, null, 2);
+      return json
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+        .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
+        .replace(/: (\\d+)/g, ': <span class="json-number">$1</span>')
+        .replace(/: (true|false)/g, ': <span class="json-boolean">$1</span>')
+        .replace(/: null/g, ': <span class="json-null">null</span>');
+    }
+
+    // Build API URL
+    function buildUrl(from, extract, endpoint = '/') {
+      const params = new URLSearchParams({
+        from: from,
+        extract: JSON.stringify(extract)
+      });
+      return \`\${BASE_URL}\${endpoint}?\${params.toString()}\`;
+    }
+
+    // Fetch and display data
+    async function fetchData(url, responseBoxId, loadingId, errorId) {
+      const responseBox = document.getElementById(responseBoxId);
+      const loading = loadingId ? document.getElementById(loadingId) : null;
+      const error = errorId ? document.getElementById(errorId) : null;
+
+      if (loading) {
+        loading.classList.add('active');
+      }
+      if (error) {
+        error.classList.remove('active');
+      }
+      if (responseBox.parentElement) {
+        responseBox.parentElement.classList.remove('active');
+      }
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (loading) {
+          loading.classList.remove('active');
+        }
+
+        responseBox.innerHTML = '<pre>' + formatJSON(data) + '</pre>';
+        responseBox.parentElement.classList.add('active');
+      } catch (err) {
+        if (loading) {
+          loading.classList.remove('active');
+        }
+        if (error) {
+          error.textContent = 'Error: ' + err.message;
+          error.classList.add('active');
+        }
+        responseBox.innerHTML = '<pre style="color: #f44;">Error: ' + err.message + '</pre>';
+        responseBox.parentElement.classList.add('active');
+      }
+    }
+
+    // Run example
+    async function runExample(num, from, extract, endpoint = '/') {
+      const url = buildUrl(from, extract, endpoint);
+      await fetchData(url, \`responseBox\${num}\`, null, null);
+    }
+
+    // Playground form
+    document.getElementById('playgroundForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const fromUrl = document.getElementById('fromUrl').value;
+      const extractJson = document.getElementById('extractJson').value;
+
+      if (!fromUrl || !extractJson) {
+        const error = document.getElementById('playgroundError');
+        error.textContent = 'Please fill in both fields';
+        error.classList.add('active');
+        return;
+      }
+
+      try {
+        const extract = JSON.parse(extractJson);
+        const url = buildUrl(fromUrl, extract);
+        await fetchData(url, 'playgroundResponseBox', 'playgroundLoading', 'playgroundError');
+      } catch (err) {
+        const error = document.getElementById('playgroundError');
+        error.textContent = 'Invalid JSON: ' + err.message;
+        error.classList.add('active');
+      }
+    });
+
+    // Clear playground
+    function clearPlayground() {
+      document.getElementById('fromUrl').value = '';
+      document.getElementById('extractJson').value = '';
+      document.getElementById('playgroundResponse').classList.remove('active');
+      document.getElementById('playgroundError').classList.remove('active');
+    }
+  </script>
 </body>
 </html>`;
 }
