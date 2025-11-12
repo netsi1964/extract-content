@@ -1,0 +1,56 @@
+name: Deploy to Deno Deploy
+
+on:
+  push:
+    branches:
+      - deno-deploy-version
+  pull_request:
+    branches:
+      - deno-deploy-version
+
+jobs:
+  deploy:
+    name: Deploy to Deno Deploy
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # Required for OIDC authentication
+      contents: read # Required to clone repository
+      pull-requests: write # Required for PR comments
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Check TypeScript types
+        run: deno check main.ts
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Run formatter check
+        run: deno fmt --check
+
+      - name: Run tests
+        run: deno test --allow-net --allow-env
+
+      - name: Deploy to Deno Deploy (Production)
+        if: github.ref == 'refs/heads/deno-deploy-version' && github.event_name == 'push'
+        uses: denoland/deployctl@v1
+        with:
+          project: extract-content
+          entrypoint: main.ts
+          root: .
+
+      - name: Deploy to Deno Deploy (Preview)
+        if: github.event_name == 'pull_request'
+        uses: denoland/deployctl@v1
+        with:
+          project: extract-content
+          entrypoint: main.ts
+          root: .
