@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wikipedia Explorer - Extract Content Demo</title>
+</head>
+<body>
+
+<!-- ============================================ -->
+<!-- HTML - Copy this into CodePen HTML section -->
+<!-- ============================================ -->
+
+<div class="container">
+  <header>
+    <h1>📚 Wikipedia Explorer</h1>
+    <p class="subtitle">Powered by extract-content API</p>
+  </header>
+
+  <div class="search-box">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Enter a topic (e.g., Deno, JavaScript, Space)"
+      value="Deno_(software)"
+    />
+    <button id="searchBtn" class="btn btn-primary">
+      <span class="btn-text">Explore</span>
+    </button>
+    <button id="randomBtn" class="btn btn-secondary">
+      <span class="btn-text">🎲 Random</span>
+    </button>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading amazing content...</p>
+  </div>
+
+  <div id="error" class="error"></div>
+
+  <div id="result" class="result">
+    <div class="article-card">
+      <img id="articleImage" class="article-image" src="" alt="" />
+      <div class="article-content">
+        <h2 id="articleTitle" class="article-title"></h2>
+        <div id="articleIntro" class="article-intro"></div>
+        <div id="categories" class="categories"></div>
+        <a id="readMore" class="read-more" href="" target="_blank">Read full article on Wikipedia →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Built with <a href="https://extract-content.netsi1964.deno.net/" target="_blank">extract-content API</a></p>
+    <p>Try it: <code>https://extract-content.netsi1964.deno.net/</code></p>
+  </footer>
+</div>
+
+<!-- ============================================ -->
+<!-- CSS - Copy this into CodePen CSS section -->
+<!-- ============================================ -->
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+  animation: fadeIn 0.6s ease-in;
+}
+
+header h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.subtitle {
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  animation: slideUp 0.6s ease-out 0.2s both;
+}
+
+#searchInput {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#searchInput:focus {
+  outline: none;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: white;
+  color: #667eea;
+}
+
+.btn-secondary {
+  background: #764ba2;
+  color: white;
+}
+
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: white;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.loading.active {
+  display: block;
+}
+
+.spinner {
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  display: none;
+  background: #ff4757;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  animation: shake 0.5s ease-in-out;
+}
+
+.error.active {
+  display: block;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.result {
+  display: none;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.result.active {
+  display: block;
+}
+
+.article-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  transition: transform 0.3s;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+}
+
+.article-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: none;
+}
+
+.article-image.visible {
+  display: block;
+}
+
+.article-content {
+  padding: 30px;
+}
+
+.article-title {
+  color: #667eea;
+  margin-bottom: 20px;
+  font-size: 2em;
+  line-height: 1.2;
+}
+
+.article-intro {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.1em;
+  line-height: 1.8;
+}
+
+.article-intro p {
+  margin-bottom: 15px;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.category-tag {
+  background: #f0f0f0;
+  color: #666;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+
+.category-tag:hover {
+  background: #667eea;
+  color: white;
+  transform: scale(1.05);
+}
+
+.read-more {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.read-more:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.footer {
+  text-align: center;
+  color: white;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  font-size: 0.9em;
+}
+
+.footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+.footer code {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 2em;
+  }
+
+  .search-box {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .article-title {
+    font-size: 1.5em;
+  }
+}
+</style>
+
+<!-- ============================================ -->
+<!-- JavaScript - Copy this into CodePen JS section -->
+<!-- ============================================ -->
+
+<script>
+const API_BASE = 'https://extract-content.netsi1964.deno.net/';
+const WIKI_BASE = 'https://en.wikipedia.org/wiki/';
+
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const randomBtn = document.getElementById('randomBtn');
+const loading = document.getElementById('loading');
+const error = document.getElementById('error');
+const result = document.getElementById('result');
+const articleImage = document.getElementById('articleImage');
+const articleTitle = document.getElementById('articleTitle');
+const articleIntro = document.getElementById('articleIntro');
+const categories = document.getElementById('categories');
+const readMore = document.getElementById('readMore');
+
+// Extract configuration
+const extractConfig = {
+  title: "h1#firstHeading",
+  intro: ".mw-parser-output > p",
+  image: ".infobox img",
+  categories: ".catlinks li a"
+};
+
+// Show loading state
+function showLoading() {
+  loading.classList.add('active');
+  error.classList.remove('active');
+  result.classList.remove('active');
+}
+
+// Show error
+function showError(message) {
+  loading.classList.remove('active');
+  error.textContent = message;
+  error.classList.add('active');
+  result.classList.remove('active');
+}
+
+// Show result
+function showResult() {
+  loading.classList.remove('active');
+  error.classList.remove('active');
+  result.classList.add('active');
+}
+
+// Format intro text (take first 3 paragraphs)
+function formatIntro(intro) {
+  if (Array.isArray(intro)) {
+    return intro.slice(0, 3).filter(p => p.trim().length > 0).map(p => `<p>${p}</p>`).join('');
+  }
+  return `<p>${intro}</p>`;
+}
+
+// Extract image URL from HTML
+function extractImageUrl(imageHtml) {
+  if (!imageHtml) return null;
+
+  const match = imageHtml.match(/src="([^"]+)"/);
+  if (match) {
+    let url = match[1];
+    // Handle protocol-relative URLs
+    if (url.startsWith('//')) {
+      url = 'https:' + url;
+    }
+    return url;
+  }
+  return null;
+}
+
+// Fetch Wikipedia article
+async function fetchArticle(topic) {
+  showLoading();
+
+  const wikiUrl = `${WIKI_BASE}${encodeURIComponent(topic)}`;
+  const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
+
+  try {
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Check if we got valid data
+    if (!data.title || data.title === '') {
+      throw new Error('Article not found. Try a different topic!');
+    }
+
+    // Update UI
+    articleTitle.textContent = data.title;
+    articleIntro.innerHTML = formatIntro(data.intro);
+    readMore.href = wikiUrl;
+
+    // Handle image
+    if (data.image) {
+      const imageUrl = extractImageUrl(Array.isArray(data.image) ? data.image[0] : data.image);
+      if (imageUrl) {
+        articleImage.src = imageUrl;
+        articleImage.alt = data.title;
+        articleImage.classList.add('visible');
+      } else {
+        articleImage.classList.remove('visible');
+      }
+    } else {
+      articleImage.classList.remove('visible');
+    }
+
+    // Handle categories
+    if (data.categories && data.categories.length > 0) {
+      const categoryList = Array.isArray(data.categories) ? data.categories : [data.categories];
+      categories.innerHTML = categoryList
+        .slice(0, 10) // Limit to 10 categories
+        .map(cat => `<span class="category-tag">${cat}</span>`)
+        .join('');
+    } else {
+      categories.innerHTML = '';
+    }
+
+    showResult();
+
+  } catch (err) {
+    console.error('Error:', err);
+    showError(`Error: ${err.message}`);
+  }
+}
+
+// Fetch random article
+async function fetchRandom() {
+  showLoading();
+
+  // Use Wikipedia's Special:Random page
+  const wikiUrl = `${WIKI_BASE}Special:Random`;
+  const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
+
+  try {
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Update search input with the article title
+    if (data.title) {
+      searchInput.value = data.title.replace(/ /g, '_');
+    }
+
+    // Update UI (same as fetchArticle)
+    articleTitle.textContent = data.title;
+    articleIntro.innerHTML = formatIntro(data.intro);
+
+    // Read more link - we need to construct it from the title
+    const articleUrl = `${WIKI_BASE}${encodeURIComponent(data.title.replace(/ /g, '_'))}`;
+    readMore.href = articleUrl;
+
+    // Handle image
+    if (data.image) {
+      const imageUrl = extractImageUrl(Array.isArray(data.image) ? data.image[0] : data.image);
+      if (imageUrl) {
+        articleImage.src = imageUrl;
+        articleImage.alt = data.title;
+        articleImage.classList.add('visible');
+      } else {
+        articleImage.classList.remove('visible');
+      }
+    } else {
+      articleImage.classList.remove('visible');
+    }
+
+    // Handle categories
+    if (data.categories && data.categories.length > 0) {
+      const categoryList = Array.isArray(data.categories) ? data.categories : [data.categories];
+      categories.innerHTML = categoryList
+        .slice(0, 10)
+        .map(cat => `<span class="category-tag">${cat}</span>`)
+        .join('');
+    } else {
+      categories.innerHTML = '';
+    }
+
+    showResult();
+
+  } catch (err) {
+    console.error('Error:', err);
+    showError(`Error: ${err.message}`);
+  }
+}
+
+// Event listeners
+searchBtn.addEventListener('click', () => {
+  const topic = searchInput.value.trim();
+  if (topic) {
+    fetchArticle(topic);
+  }
+});
+
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    const topic = searchInput.value.trim();
+    if (topic) {
+      fetchArticle(topic);
+    }
+  }
+});
+
+randomBtn.addEventListener('click', () => {
+  fetchRandom();
+});
+
+// Load initial article on page load
+fetchArticle('Deno_(software)');
+</script>
+
+</body>
+</html>
