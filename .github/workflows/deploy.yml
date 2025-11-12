@@ -3,10 +3,10 @@ name: Deploy to Deno Deploy
 on:
   push:
     branches:
-      - deno-deploy-version
+      - master
   pull_request:
     branches:
-      - deno-deploy-version
+      - master
 
 jobs:
   deploy:
@@ -40,7 +40,7 @@ jobs:
         run: deno test --allow-net --allow-env
 
       - name: Deploy to Deno Deploy (Production)
-        if: github.ref == 'refs/heads/deno-deploy-version' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         uses: denoland/deployctl@v1
         with:
           project: extract-content
