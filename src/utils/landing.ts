@@ -996,7 +996,18 @@ export function generateLandingPage(baseUrl: string): string {
                       img.src = toAbsoluteUrl(src);
                       if (alt) img.alt = alt;
                       img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
-                      li.appendChild(img);
+
+                      // Wrap image in link if link exists
+                      if (link) {
+                        const a = document.createElement('a');
+                        a.href = toAbsoluteUrl(link);
+                        a.target = '_blank';
+                        a.style.cssText = 'display:block;';
+                        a.appendChild(img);
+                        li.appendChild(a);
+                      } else {
+                        li.appendChild(img);
+                      }
 
                       if (v) {
                         const caption = document.createElement('div');
@@ -1030,7 +1041,18 @@ export function generateLandingPage(baseUrl: string): string {
                     img.src = toAbsoluteUrl(srcs);
                     if (alts) img.alt = alts;
                     img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
-                    content.appendChild(img);
+
+                    // Wrap image in link if link exists
+                    if (links) {
+                      const a = document.createElement('a');
+                      a.href = toAbsoluteUrl(links);
+                      a.target = '_blank';
+                      a.style.cssText = 'display:block;';
+                      a.appendChild(img);
+                      content.appendChild(a);
+                    } else {
+                      content.appendChild(img);
+                    }
 
                     if (value) {
                       const caption = document.createElement('div');
