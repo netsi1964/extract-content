@@ -354,6 +354,7 @@ export function generateLandingPage(baseUrl: string): string {
       <button type="submit" class="btn" id="tryBtn">Try It Now</button>
       <button type="button" class="btn btn-secondary" onclick="clearPlayground()">Clear</button>
       <button type="button" class="btn btn-secondary" onclick="generateBookmarklet()" style="background: #f97316;">🔖 Get Scriptlet Link</button>
+      <button type="button" class="btn" style="background: #667eea;" onclick="generateAIPrompt()">🤖 Get AI Prompt</button>
       <div class="loading" id="playgroundLoading">⏳ Fetching data...</div>
       <div class="error" id="playgroundError"></div>
     </form>
@@ -1083,6 +1084,57 @@ export function generateLandingPage(baseUrl: string): string {
       }).catch(err => {
         console.error('Failed to copy:', err);
         alert('Failed to copy to clipboard. Try dragging the link instead.');
+      });
+    }
+
+    // Generate AI prompt for finding CSS selectors
+    function generateAIPrompt() {
+      const fromUrl = document.getElementById('fromUrl').value;
+      const error = document.getElementById('playgroundError');
+
+      if (!fromUrl) {
+        error.textContent = 'Please enter a URL first';
+        error.classList.add('active');
+        return;
+      }
+
+      // Prompt user for what to extract
+      const userQuery = prompt('What should the AI find CSS selectors for?\\n\\nExamples:\\n- headlines\\n- article titles and links\\n- product names and prices\\n- news headlines with categories', 'headlines');
+
+      if (!userQuery) return;
+
+      // Generate comprehensive AI prompt
+      const aiPrompt = 'I need help finding CSS selectors for a website.\\n\\n' +
+        'Website URL: ' + fromUrl + '\\n\\n' +
+        'Task: Visit the URL above and find the correct CSS selectors to extract: ' + userQuery + '\\n\\n' +
+        'Please:\\n' +
+        '1. Visit the website and inspect the HTML structure\\n' +
+        '2. Identify the appropriate CSS selectors for extracting ' + userQuery + '\\n' +
+        '3. Return ONLY a JSON object in this exact format (no explanations, no markdown):\\n\\n' +
+        '{\\n' +
+        '  "fieldname": "css-selector-here"\\n' +
+        '}\\n\\n' +
+        'Important guidelines:\\n' +
+        '- Use specific, reliable CSS selectors (classes, IDs, or element combinations)\\n' +
+        '- If there are multiple items (like multiple headlines), the selector should match all of them\\n' +
+        '- If you need links, use the @attribute syntax: "selector@href" for URLs, "selector@src" for images\\n' +
+        '- Use naming conventions: fieldname_link for clickable links, fieldname_src for images\\n' +
+        '- Keep field names descriptive and lowercase\\n\\n' +
+        'Example response format:\\n' +
+        '{\\n' +
+        '  "headlines": ".article-title",\\n' +
+        '  "headlines_link": ".article-title a@href",\\n' +
+        '  "categories": ".article-category"\\n' +
+        '}';
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(aiPrompt).then(() => {
+        alert('✅ AI prompt copied to clipboard!\\n\\nPaste it into Claude, ChatGPT, or any LLM to get CSS selectors for "' + userQuery + '"');
+        error.classList.remove('active');
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        error.textContent = 'Failed to copy to clipboard';
+        error.classList.add('active');
       });
     }
   </script>
