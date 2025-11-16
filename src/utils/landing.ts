@@ -353,6 +353,7 @@ export function generateLandingPage(baseUrl: string): string {
       </div>
       <button type="submit" class="btn" id="tryBtn">Try It Now</button>
       <button type="button" class="btn btn-secondary" onclick="clearPlayground()">Clear</button>
+      <button type="button" class="btn btn-secondary" onclick="generateBookmarklet()" style="background: #f97316;">🔖 Get Scriptlet Link</button>
       <div class="loading" id="playgroundLoading">⏳ Fetching data...</div>
       <div class="error" id="playgroundError"></div>
     </form>
@@ -362,6 +363,22 @@ export function generateLandingPage(baseUrl: string): string {
         <button class="copy-btn" id="copyCurlBtn" onclick="copyCurl()">Copy</button>
       </div>
       <div class="curl-code" id="curlCode"></div>
+    </div>
+    <div class="curl-container" id="bookmarkletContainer">
+      <div class="curl-header">
+        <div class="curl-title">🔖 Bookmarklet:</div>
+        <button class="copy-btn" id="copyBookmarkletBtn" onclick="copyBookmarklet()">Copy Link</button>
+      </div>
+      <div style="margin-bottom: 15px; color: #f8f8f2; font-size: 0.9em;">
+        Drag this link to your bookmarks bar:
+        <a href="#" id="bookmarkletLink" style="display: inline-block; margin-top: 8px; padding: 8px 16px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; font-weight: 600;">📌 Extract Content</a>
+      </div>
+      <div style="color: #a0a0a0; font-size: 0.85em; line-height: 1.5;">
+        💡 <strong>How to use:</strong><br>
+        1. Drag the link above to your bookmarks bar<br>
+        2. Visit any webpage<br>
+        3. Click the bookmark to fetch and display content
+      </div>
     </div>
     <div class="response-container" id="playgroundResponse">
       <h3 style="color: #333;">Response:</h3>
@@ -724,7 +741,133 @@ export function generateLandingPage(baseUrl: string): string {
       document.getElementById('playgroundCurl').classList.remove('active');
       document.getElementById('playgroundResponse').classList.remove('active');
       document.getElementById('playgroundError').classList.remove('active');
+      document.getElementById('bookmarkletContainer').classList.remove('active');
       currentCurlCommand = '';
+    }
+
+    // Generate bookmarklet
+    function generateBookmarklet() {
+      const fromUrl = document.getElementById('fromUrl').value;
+      const extractJson = document.getElementById('extractJson').value;
+      const error = document.getElementById('playgroundError');
+
+      if (!fromUrl || !extractJson) {
+        error.textContent = 'Please fill in both URL and Extract fields';
+        error.classList.add('active');
+        return;
+      }
+
+      try {
+        const extract = JSON.parse(extractJson);
+        const apiUrl = buildUrl(fromUrl, extract, '/');
+
+        // Create the bookmarklet code
+        const bookmarkletCode = \`(function(){
+          const apiUrl = '\${apiUrl.replace(/'/g, "\\\\'")}';
+
+          fetch(apiUrl)
+            .then(r => r.json())
+            .then(data => {
+              // Remove existing overlay if present
+              const existing = document.getElementById('extract-content-overlay');
+              if (existing) existing.remove();
+
+              // Create overlay
+              const overlay = document.createElement('div');
+              overlay.id = 'extract-content-overlay';
+              overlay.style.cssText = 'position:fixed;top:20px;right:20px;width:400px;max-height:80vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:20px;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);z-index:999999;overflow-y:auto;font-family:system-ui,-apple-system,sans-serif;';
+
+              // Create close button
+              const closeBtn = document.createElement('button');
+              closeBtn.textContent = '×';
+              closeBtn.style.cssText = 'position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.2);border:none;color:white;font-size:24px;cursor:pointer;border-radius:50%;width:30px;height:30px;line-height:24px;padding:0;';
+              closeBtn.onclick = () => overlay.remove();
+
+              // Create title
+              const title = document.createElement('h3');
+              title.textContent = '📊 Extracted Content';
+              title.style.cssText = 'margin:0 0 15px 0;font-size:18px;';
+
+              // Create content list
+              const list = document.createElement('div');
+              list.style.cssText = 'background:rgba(255,255,255,0.1);padding:15px;border-radius:8px;';
+
+              Object.entries(data).forEach(([key, value]) => {
+                const item = document.createElement('div');
+                item.style.cssText = 'margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid rgba(255,255,255,0.2);';
+
+                const label = document.createElement('div');
+                label.textContent = key;
+                label.style.cssText = 'font-weight:700;margin-bottom:8px;text-transform:uppercase;font-size:11px;letter-spacing:1px;opacity:0.8;';
+
+                const content = document.createElement('div');
+                content.style.cssText = 'font-size:14px;line-height:1.5;';
+
+                if (Array.isArray(value)) {
+                  const ul = document.createElement('ul');
+                  ul.style.cssText = 'margin:0;padding-left:20px;';
+                  value.forEach(v => {
+                    const li = document.createElement('li');
+                    li.textContent = v;
+                    li.style.cssText = 'margin:4px 0;';
+                    ul.appendChild(li);
+                  });
+                  content.appendChild(ul);
+                } else {
+                  content.textContent = value;
+                }
+
+                item.appendChild(label);
+                item.appendChild(content);
+                list.appendChild(item);
+              });
+
+              overlay.appendChild(closeBtn);
+              overlay.appendChild(title);
+              overlay.appendChild(list);
+              document.body.appendChild(overlay);
+            })
+            .catch(err => {
+              alert('Error fetching content: ' + err.message);
+            });
+        })();\`;
+
+        // Encode as bookmarklet URL
+        const bookmarkletUrl = 'javascript:' + encodeURIComponent(bookmarkletCode);
+
+        // Update link
+        const link = document.getElementById('bookmarkletLink');
+        link.href = bookmarkletUrl;
+
+        // Show container
+        document.getElementById('bookmarkletContainer').classList.add('active');
+        error.classList.remove('active');
+
+      } catch (err) {
+        error.textContent = 'Invalid JSON: ' + err.message;
+        error.classList.add('active');
+      }
+    }
+
+    // Copy bookmarklet
+    function copyBookmarklet() {
+      const link = document.getElementById('bookmarkletLink');
+      const href = link.href;
+
+      navigator.clipboard.writeText(href).then(() => {
+        const btn = document.getElementById('copyBookmarkletBtn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy to clipboard. Try dragging the link instead.');
+      });
     }
   </script>
 </body>
