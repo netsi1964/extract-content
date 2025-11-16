@@ -467,8 +467,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 1: Wikipedia Article with Links</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(1, 'https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', title_link: 'h1 a@href', intro: '.mw-parser-output > p'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(1, 'https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', title_link: 'h1 a@href', intro: '.mw-parser-output > p'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', title_link: 'h1 a@href', intro: '.mw-parser-output > p'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://en.wikipedia.org/wiki/Deno_(software)</code>
+      </p>
       <pre><code>const extract = {
   "title": "h1",
   "title_link": "h1 a@href",  // Extract link using @href
@@ -482,8 +488,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 2: GitHub Repository</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(2, 'https://github.com/denoland/deno', {repoName: 'h1 strong a', description: 'p.f4', stars: '#repo-stars-counter-star'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(2, 'https://github.com/denoland/deno', {repoName: 'h1 strong a', description: 'p.f4', stars: '#repo-stars-counter-star'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://github.com/denoland/deno', {repoName: 'h1 strong a', description: 'p.f4', stars: '#repo-stars-counter-star'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://github.com/denoland/deno</code>
+      </p>
       <pre><code>const extract = {
   "repoName": "h1 strong a",
   "description": "p.f4",
@@ -497,8 +509,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 3: Dev.to Articles</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(3, 'https://dev.to', {headlines: 'h2.crayons-story__title a', authors: '.crayons-story__secondary a'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(3, 'https://dev.to', {headlines: 'h2.crayons-story__title a', authors: '.crayons-story__secondary a'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://dev.to', {headlines: 'h2.crayons-story__title a', authors: '.crayons-story__secondary a'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://dev.to</code>
+      </p>
       <pre><code>const extract = {
   "headlines": "h2.crayons-story__title a",
   "authors": ".crayons-story__secondary a"
@@ -511,8 +529,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 4: Hacker News</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(4, 'https://news.ycombinator.com', {headlines: '.titleline > a', scores: '.score'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(4, 'https://news.ycombinator.com', {headlines: '.titleline > a', scores: '.score'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://news.ycombinator.com', {headlines: '.titleline > a', scores: '.score'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://news.ycombinator.com</code>
+      </p>
       <pre><code>const extract = {
   "headlines": ".titleline > a",
   "scores": ".score"
@@ -525,8 +549,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 5: Reddit Posts</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(5, 'https://old.reddit.com/r/programming', {titles: '.title > a', domain: '.domain'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(5, 'https://old.reddit.com/r/programming', {titles: '.title > a', domain: '.domain'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://old.reddit.com/r/programming', {titles: '.title > a', domain: '.domain'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://old.reddit.com/r/programming</code>
+      </p>
       <pre><code>const extract = {
   "titles": ".title > a",
   "domain": ".domain"
@@ -539,8 +569,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 6: Extract HTML Markup</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(6, 'https://en.wikipedia.org/wiki/Web_scraping', {infobox: '.infobox', firstPara: '.mw-parser-output > p'}, '/html')">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(6, 'https://en.wikipedia.org/wiki/Web_scraping', {infobox: '.infobox', firstPara: '.mw-parser-output > p'}, '/html')">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://en.wikipedia.org/wiki/Web_scraping', {infobox: '.infobox', firstPara: '.mw-parser-output > p'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://en.wikipedia.org/wiki/Web_scraping</code>
+      </p>
       <p>Get the actual HTML markup instead of text:</p>
       <pre><code>const extract = {
   "infobox": ".infobox",
@@ -554,8 +590,14 @@ export function generateLandingPage(baseUrl: string): string {
     <div class="example">
       <div class="example-header">
         <h3 style="margin: 0;">Example 7: Bold.dk News with Links 🇩🇰</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(7, 'https://bold.dk', {overskrifter: '.article-headline', overskrifter_link: '.thumb.article_list_item@href', kategorier: '.ArticleListItem__tag'})">Try It</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-small btn-secondary" onclick="runExample(7, 'https://bold.dk', {overskrifter: '.article-headline', overskrifter_link: '.thumb.article_list_item@href', kategorier: '.ArticleListItem__tag'})">Try It</button>
+          <button class="btn btn-small" style="background: #f97316;" onclick="useExample('https://bold.dk', {overskrifter: '.article-headline', overskrifter_link: '.thumb.article_list_item@href', kategorier: '.ArticleListItem__tag'})">Use This</button>
+        </div>
       </div>
+      <p style="margin: 10px 0; color: #666; font-size: 0.9em;">
+        <strong>URL:</strong> <code style="background: #f4f4f4; padding: 2px 6px;">https://bold.dk</code>
+      </p>
       <p>Extract Danish news headlines with clickable links (naming convention):</p>
       <pre><code>const extract = {
   "overskrifter": ".article-headline",
@@ -722,6 +764,28 @@ export function generateLandingPage(baseUrl: string): string {
     async function runExample(num, from, extract, endpoint = '/') {
       const url = buildUrl(from, extract, endpoint);
       await fetchData(url, \`responseBox\${num}\`, null, null);
+    }
+
+    // Use this example - copy to playground and scroll
+    function useExample(from, extract) {
+      document.getElementById('fromUrl').value = from;
+      document.getElementById('extractJson').value = JSON.stringify(extract, null, 2);
+
+      // Scroll to playground smoothly
+      const playground = document.getElementById('playgroundForm');
+      playground.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Highlight the fields briefly
+      const fromInput = document.getElementById('fromUrl');
+      const extractInput = document.getElementById('extractJson');
+
+      fromInput.style.borderColor = '#f97316';
+      extractInput.style.borderColor = '#f97316';
+
+      setTimeout(() => {
+        fromInput.style.borderColor = '';
+        extractInput.style.borderColor = '';
+      }, 1500);
     }
 
     // Playground form
