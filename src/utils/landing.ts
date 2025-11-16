@@ -765,6 +765,20 @@ export function generateLandingPage(baseUrl: string): string {
         const bookmarkletCode = \`(function(){
           const apiUrl = '\${apiUrl.replace(/'/g, "\\\\'")}';
 
+          // Extract source URL from API URL for converting relative links to absolute
+          const urlParams = new URL(apiUrl).searchParams;
+          const sourceUrl = urlParams.get('from');
+          const baseUrl = sourceUrl ? new URL(sourceUrl).origin : '';
+
+          // Helper to convert relative URLs to absolute
+          const toAbsoluteUrl = (url) => {
+            if (!url || !baseUrl) return url;
+            if (url.startsWith('http://') || url.startsWith('https://')) return url;
+            if (url.startsWith('//')) return 'https:' + url;
+            if (url.startsWith('/')) return baseUrl + url;
+            return url;
+          };
+
           fetch(apiUrl)
             .then(r => r.json())
             .then(data => {
@@ -872,7 +886,7 @@ export function generateLandingPage(baseUrl: string): string {
                     // Render image if src exists
                     if (src) {
                       const img = document.createElement('img');
-                      img.src = src;
+                      img.src = toAbsoluteUrl(src);
                       if (alt) img.alt = alt;
                       img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
                       li.appendChild(img);
@@ -887,7 +901,7 @@ export function generateLandingPage(baseUrl: string): string {
                     // Render link if link exists
                     else if (link && v) {
                       const a = document.createElement('a');
-                      a.href = link;
+                      a.href = toAbsoluteUrl(link);
                       a.textContent = v;
                       a.target = '_blank';
                       a.style.cssText = 'color:white;text-decoration:underline;';
@@ -906,7 +920,7 @@ export function generateLandingPage(baseUrl: string): string {
                   // Single value
                   if (srcs) {
                     const img = document.createElement('img');
-                    img.src = srcs;
+                    img.src = toAbsoluteUrl(srcs);
                     if (alts) img.alt = alts;
                     img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
                     content.appendChild(img);
@@ -919,7 +933,7 @@ export function generateLandingPage(baseUrl: string): string {
                     }
                   } else if (links) {
                     const a = document.createElement('a');
-                    a.href = links;
+                    a.href = toAbsoluteUrl(links);
                     a.textContent = value;
                     a.target = '_blank';
                     a.style.cssText = 'color:white;text-decoration:underline;';
