@@ -28,19 +28,6 @@
     }
   </script>
   <style>
-    /* Container Query Support */
-    @container (min-width: 400px) {
-      .card-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @container (min-width: 600px) {
-      .card-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
     /* Custom animations */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -96,24 +83,24 @@
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-orange-950 to-slate-900 min-h-screen text-white">
+<body class="bg-gray-50 min-h-screen">
 
   <!-- Header -->
-  <header class="bg-black/30 backdrop-blur-md border-b border-orange-500/20 sticky top-0 z-50">
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/50">
+          <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/30">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
             </svg>
           </div>
           <div>
-            <h1 class="text-xl font-bold">Extract Content API</h1>
-            <p class="text-sm text-orange-400">Interactive Tutorial</p>
+            <h1 class="text-xl font-bold text-gray-900">Extract Content API</h1>
+            <p class="text-sm text-orange-600">Interactive Tutorial</p>
           </div>
         </div>
-        <a href="/" class="hidden sm:flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition">
+        <a href="/" class="hidden sm:flex items-center gap-2 text-sm text-gray-600 hover:text-orange-600 transition">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
           </svg>
@@ -128,26 +115,26 @@
 
     <!-- Introduction -->
     <section class="mb-8 fade-in">
-      <div class="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-2xl p-8">
-        <h2 class="text-3xl font-bold mb-4">Welcome to the Tutorial! 👋</h2>
-        <p class="text-gray-300 text-lg mb-4">
+      <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-2xl p-8">
+        <h2 class="text-3xl font-bold mb-4 text-gray-900">Welcome to the Tutorial! 👋</h2>
+        <p class="text-gray-700 text-lg mb-4">
           Learn how to extract news from <strong>Bold.dk</strong> using the Extract Content API.
           This step-by-step tutorial will show you how to build a complete news reader.
         </p>
         <div class="flex flex-wrap gap-4 mt-6">
-          <div class="flex items-center gap-2 text-orange-400">
+          <div class="flex items-center gap-2 text-orange-600">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
             <span>Vanilla JavaScript</span>
           </div>
-          <div class="flex items-center gap-2 text-orange-400">
+          <div class="flex items-center gap-2 text-orange-600">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
             <span>Web Components</span>
           </div>
-          <div class="flex items-center gap-2 text-orange-400">
+          <div class="flex items-center gap-2 text-orange-600">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
@@ -159,24 +146,32 @@
 
     <!-- Tab Navigation -->
     <nav class="mb-8">
-      <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-2">
+      <div class="bg-white rounded-xl border border-gray-200 p-2 shadow-sm">
         <div class="flex flex-col sm:flex-row gap-2">
-          <button onclick="showTab(1)" id="tab-btn-1" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg">
+          <button onclick="showTab(1)" id="tab-btn-1" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md">
             <div class="flex items-center justify-center gap-2">
               <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">1</span>
               <span>Basic Headlines</span>
             </div>
           </button>
-          <button onclick="showTab(2)" id="tab-btn-2" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700">
+          <button onclick="showTab(2)" id="tab-btn-2" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gray-100 text-gray-700 hover:bg-gray-200">
             <div class="flex items-center justify-center gap-2">
-              <span class="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              <span class="flex-shrink-0 w-6 h-6 bg-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
               <span>Add Metadata</span>
             </div>
           </button>
-          <button onclick="showTab(3)" id="tab-btn-3" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700">
+          <button onclick="showTab(3)" id="tab-btn-3" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gray-100 text-gray-700 hover:bg-gray-200">
             <div class="flex items-center justify-center gap-2">
-              <span class="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+              <span class="flex-shrink-0 w-6 h-6 bg-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
               <span>News Cards</span>
+            </div>
+          </button>
+          <button onclick="showTab(4)" id="tab-btn-4" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gray-100 text-gray-700 hover:bg-gray-200">
+            <div class="flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <span>API Reference</span>
             </div>
           </button>
         </div>
@@ -187,16 +182,16 @@
     <div id="tab-1" class="tab-content active">
       <div class="slide-in">
         <div class="mb-6">
-          <h2 class="text-2xl font-bold mb-2">Step 1: Fetch Basic Headlines</h2>
-          <p class="text-gray-400">Let's start by extracting article headlines from Bold.dk using CSS selectors</p>
+          <h2 class="text-2xl font-bold mb-2 text-gray-900">Step 1: Fetch Basic Headlines</h2>
+          <p class="text-gray-600">Let's start by extracting article headlines from Bold.dk using CSS selectors</p>
         </div>
 
         <div class="grid lg:grid-cols-2 gap-6 mb-6">
           <!-- Code Example -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
-              <span class="text-sm font-semibold text-gray-300">example-1.js</span>
-              <span class="text-xs text-orange-400">Vanilla JavaScript</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-700">example-1.js</span>
+              <span class="text-xs text-orange-600 font-medium">Vanilla JavaScript</span>
             </div>
             <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Step 1: Define API endpoint and extract parameters</span>
 <span class="code-keyword">const</span> <span class="code-function">API_URL</span> = <span class="code-string">'https://extract-content.deno.dev'</span>;
@@ -218,18 +213,18 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
           </div>
 
           <!-- JSON Parameter -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
-              <span class="text-sm font-semibold text-gray-300">Extract Parameter (JSON)</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+              <span class="text-sm font-semibold text-gray-700">Extract Parameter (JSON)</span>
             </div>
             <div class="p-4">
               <pre class="code-block p-4 rounded-lg"><code>{
   <span class="code-string">"overskrifter"</span>: <span class="code-string">".article-headline"</span>
 }</code></pre>
-              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                <p class="text-sm text-gray-300 mb-2"><strong>💡 How it works:</strong></p>
-                <p class="text-sm text-gray-400">
-                  The CSS selector <code class="text-orange-400">.article-headline</code> targets all elements with
+              <div class="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p class="text-sm text-gray-900 mb-2 font-semibold">💡 How it works:</p>
+                <p class="text-sm text-gray-700">
+                  The CSS selector <code class="text-orange-600 font-mono text-xs">.article-headline</code> targets all elements with
                   the class "article-headline". The API returns an array of text content from these elements.
                 </p>
               </div>
@@ -241,7 +236,7 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
         <div class="mb-6">
           <button
             onclick="runExample1()"
-            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/30 text-lg text-white">
             ▶ Run Example 1
           </button>
         </div>
@@ -255,16 +250,16 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
     <div id="tab-2" class="tab-content">
       <div class="slide-in">
         <div class="mb-6">
-          <h2 class="text-2xl font-bold mb-2">Step 2: Add Categories & Timestamps</h2>
-          <p class="text-gray-400">Extract multiple pieces of data by using multiple CSS selectors</p>
+          <h2 class="text-2xl font-bold mb-2 text-gray-900">Step 2: Add Categories & Timestamps</h2>
+          <p class="text-gray-600">Extract multiple pieces of data by using multiple CSS selectors</p>
         </div>
 
         <div class="grid lg:grid-cols-2 gap-6 mb-6">
           <!-- Code Example -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
-              <span class="text-sm font-semibold text-gray-300">example-2.js</span>
-              <span class="text-xs text-orange-400">Enhanced Extraction</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-700">example-2.js</span>
+              <span class="text-xs text-orange-600 font-medium">Enhanced Extraction</span>
             </div>
             <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Extract multiple data points with different selectors</span>
 <span class="code-keyword">const</span> <span class="code-function">extractParams</span> = {
@@ -287,9 +282,9 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
           </div>
 
           <!-- JSON Parameter -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
-              <span class="text-sm font-semibold text-gray-300">Extract Parameter (JSON)</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+              <span class="text-sm font-semibold text-gray-700">Extract Parameter (JSON)</span>
             </div>
             <div class="p-4">
               <pre class="code-block p-4 rounded-lg text-sm"><code>{
@@ -297,11 +292,11 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
   <span class="code-string">"kategorier"</span>: <span class="code-string">".ArticleListItem__tag"</span>,
   <span class="code-string">"tidspunkter"</span>: <span class="code-string">".ArticleListItem__timestamp"</span>
 }</code></pre>
-              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                <p class="text-sm text-gray-300 mb-2"><strong>💡 Multiple Selectors:</strong></p>
-                <ul class="text-sm text-gray-400 space-y-1">
-                  <li>• <code class="text-orange-400">.ArticleListItem__tag</code> extracts category tags</li>
-                  <li>• <code class="text-orange-400">.ArticleListItem__timestamp</code> extracts post times</li>
+              <div class="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p class="text-sm text-gray-900 mb-2 font-semibold">💡 Multiple Selectors:</p>
+                <ul class="text-sm text-gray-700 space-y-1">
+                  <li>• <code class="text-orange-600 font-mono text-xs">.ArticleListItem__tag</code> extracts category tags</li>
+                  <li>• <code class="text-orange-600 font-mono text-xs">.ArticleListItem__timestamp</code> extracts post times</li>
                   <li>• Each selector returns an array in the same order</li>
                 </ul>
               </div>
@@ -313,7 +308,7 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
         <div class="mb-6">
           <button
             onclick="runExample2()"
-            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/30 text-lg text-white">
             ▶ Run Example 2
           </button>
         </div>
@@ -327,16 +322,16 @@ data.overskrifter.<span class="code-function">forEach</span>(headline => {
     <div id="tab-3" class="tab-content">
       <div class="slide-in">
         <div class="mb-6">
-          <h2 class="text-2xl font-bold mb-2">Step 3: Build Beautiful News Cards</h2>
-          <p class="text-gray-400">Create reusable Web Components for a professional news layout</p>
+          <h2 class="text-2xl font-bold mb-2 text-gray-900">Step 3: Build Beautiful News Cards</h2>
+          <p class="text-gray-600">Create reusable Web Components for a professional news layout</p>
         </div>
 
         <div class="grid lg:grid-cols-2 gap-6 mb-6">
           <!-- Code Example -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
-              <span class="text-sm font-semibold text-gray-300">news-card.js</span>
-              <span class="text-xs text-orange-400">Web Component</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-700">news-card.js</span>
+              <span class="text-xs text-orange-600 font-medium">Web Component</span>
             </div>
             <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Define a custom Web Component</span>
 <span class="code-keyword">class</span> <span class="code-function">NewsCard</span> <span class="code-keyword">extends</span> HTMLElement {
@@ -360,9 +355,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
           </div>
 
           <!-- Usage Example -->
-          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
-            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
-              <span class="text-sm font-semibold text-gray-300">Usage in HTML</span>
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+              <span class="text-sm font-semibold text-gray-700">Usage in HTML</span>
             </div>
             <div class="p-4">
               <pre class="code-block p-4 rounded-lg text-sm"><code><span class="code-comment">&lt;!-- Use the custom element --&gt;</span>
@@ -371,9 +366,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
   <span class="code-keyword">category</span>=<span class="code-string">"VM kval. UEFA"</span>
   <span class="code-keyword">time</span>=<span class="code-string">"12:47"</span>
 &gt;&lt;/<span class="code-function">news-card</span>&gt;</code></pre>
-              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
-                <p class="text-sm text-gray-300 mb-2"><strong>🎯 Benefits:</strong></p>
-                <ul class="text-sm text-gray-400 space-y-1">
+              <div class="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                <p class="text-sm text-gray-900 mb-2 font-semibold">🎯 Benefits:</p>
+                <ul class="text-sm text-gray-700 space-y-1">
                   <li>✓ Reusable across projects</li>
                   <li>✓ Encapsulated logic</li>
                   <li>✓ Native browser support</li>
@@ -388,7 +383,7 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
         <div class="mb-6">
           <button
             onclick="runExample3()"
-            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/30 text-lg text-white">
             ▶ Run Example 3 - Build News Grid
           </button>
         </div>
@@ -398,66 +393,116 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
       </div>
     </div>
 
-    <!-- API Reference Section -->
-    <section class="mt-16 mb-8">
-      <div class="bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur rounded-2xl border border-slate-600 p-8">
-        <h2 class="text-2xl font-bold mb-6 text-orange-400">🔧 API Reference</h2>
+    <!-- Tab 4: API Reference -->
+    <div id="tab-4" class="tab-content">
+      <div class="slide-in">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2 text-gray-900">📚 API Reference</h2>
+          <p class="text-gray-600">Complete reference for the Extract Content API</p>
+        </div>
 
-        <div class="space-y-6">
-          <!-- Endpoint -->
-          <div>
-            <h3 class="text-lg font-semibold mb-2 text-orange-300">Endpoint</h3>
-            <code class="block bg-black/40 p-3 rounded text-sm break-all">
-              GET https://extract-content.deno.dev/?from={URL}&extract={JSON}
-            </code>
-          </div>
+        <div class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
+          <div class="space-y-8">
+            <!-- Endpoint -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3 text-orange-600">Endpoint</h3>
+              <code class="block bg-gray-900 text-gray-100 p-4 rounded-lg text-sm break-all font-mono">
+                GET https://extract-content.deno.dev/?from={URL}&extract={JSON}
+              </code>
+            </div>
 
-          <!-- Parameters -->
-          <div>
-            <h3 class="text-lg font-semibold mb-2 text-orange-300">Parameters</h3>
-            <div class="space-y-2">
-              <div class="bg-black/40 p-3 rounded">
-                <code class="text-yellow-400">from</code>
-                <span class="text-gray-400 ml-2">- Target URL to scrape (e.g., https://bold.dk)</span>
-              </div>
-              <div class="bg-black/40 p-3 rounded">
-                <code class="text-yellow-400">extract</code>
-                <span class="text-gray-400 ml-2">- URL-encoded JSON object with CSS selectors</span>
+            <!-- Parameters -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3 text-orange-600">Parameters</h3>
+              <div class="space-y-3">
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <code class="text-orange-600 font-semibold">from</code>
+                  <span class="text-gray-700 ml-2">- Target URL to scrape (e.g., https://bold.dk)</span>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <code class="text-orange-600 font-semibold">extract</code>
+                  <span class="text-gray-700 ml-2">- URL-encoded JSON object with CSS selectors</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- CSS Selectors for Bold.dk -->
-          <div>
-            <h3 class="text-lg font-semibold mb-2 text-orange-300">CSS Selectors for Bold.dk</h3>
-            <div class="grid sm:grid-cols-2 gap-3">
-              <div class="bg-black/40 p-3 rounded text-sm">
-                <code class="text-orange-400">.article-headline</code>
-                <p class="text-gray-400 text-xs mt-1">Article titles</p>
+            <!-- CSS Selectors for Bold.dk -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3 text-orange-600">CSS Selectors for Bold.dk</h3>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm">
+                  <code class="text-orange-600 font-mono">.article-headline</code>
+                  <p class="text-gray-600 text-xs mt-1">Article titles</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm">
+                  <code class="text-orange-600 font-mono">.ArticleListItem__tag</code>
+                  <p class="text-gray-600 text-xs mt-1">Category tags</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm">
+                  <code class="text-orange-600 font-mono">.ArticleListItem__timestamp</code>
+                  <p class="text-gray-600 text-xs mt-1">Publication time</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm">
+                  <code class="text-orange-600 font-mono">.ArticleListItem__commentsCount</code>
+                  <p class="text-gray-600 text-xs mt-1">Comment count</p>
+                </div>
               </div>
-              <div class="bg-black/40 p-3 rounded text-sm">
-                <code class="text-orange-400">.ArticleListItem__tag</code>
-                <p class="text-gray-400 text-xs mt-1">Category tags</p>
-              </div>
-              <div class="bg-black/40 p-3 rounded text-sm">
-                <code class="text-orange-400">.ArticleListItem__timestamp</code>
-                <p class="text-gray-400 text-xs mt-1">Publication time</p>
-              </div>
-              <div class="bg-black/40 p-3 rounded text-sm">
-                <code class="text-orange-400">.ArticleListItem__commentsCount</code>
-                <p class="text-gray-400 text-xs mt-1">Comment count</p>
-              </div>
+            </div>
+
+            <!-- Example Request -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3 text-orange-600">Example Request</h3>
+              <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto font-mono"><code>const extractParams = {
+  "overskrifter": ".article-headline",
+  "kategorier": ".ArticleListItem__tag"
+};
+
+const url = `https://extract-content.deno.dev/?from=https://bold.dk&extract=${
+  encodeURIComponent(JSON.stringify(extractParams))
+}`;
+
+const response = await fetch(url);
+const data = await response.json();
+
+console.log(data.overskrifter); // Array of headlines
+console.log(data.kategorier);   // Array of categories</code></pre>
+            </div>
+
+            <!-- Response Format -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3 text-orange-600">Response Format</h3>
+              <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg text-xs overflow-x-auto font-mono"><code>{
+  "overskrifter": [
+    "Headline 1",
+    "Headline 2",
+    "Headline 3"
+  ],
+  "kategorier": [
+    "VM kval. UEFA",
+    "Bold+",
+    "Superligaen"
+  ]
+}</code></pre>
+            </div>
+
+            <!-- Back to Start -->
+            <div class="pt-6 border-t border-gray-200">
+              <button
+                onclick="showTab(1)"
+                class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-6 py-3 rounded-lg font-semibold transition-all text-white shadow-md">
+                ← Back to Step 1
+              </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
   </main>
 
   <!-- Footer -->
-  <footer class="bg-black/30 border-t border-orange-500/20 py-6 mt-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400 text-sm">
+  <footer class="bg-white border-t border-gray-200 py-6 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-600 text-sm">
       <p>Built with 🧡 using Extract Content API • Vanilla JS • Tailwind CSS • Web Components</p>
     </div>
   </footer>
@@ -475,14 +520,14 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
 
       // Reset all buttons
       document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700';
+        btn.className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gray-100 text-gray-700 hover:bg-gray-200';
       });
 
       // Show selected tab
       document.getElementById(`tab-${tabNumber}`).classList.add('active');
 
       // Highlight selected button
-      document.getElementById(`tab-btn-${tabNumber}`).className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg';
+      document.getElementById(`tab-btn-${tabNumber}`).className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md';
 
       // Scroll to top smoothly
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -497,9 +542,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
 
         this.className = 'block';
         this.innerHTML = `
-          <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 border border-slate-700 hover:border-orange-500/50 transition-all hover:scale-[1.02] shadow-lg hover:shadow-orange-500/20 cursor-pointer">
+          <div class="bg-white rounded-xl p-5 border border-gray-200 hover:border-orange-400 transition-all hover:shadow-lg cursor-pointer">
             <div class="flex items-center justify-between mb-3">
-              <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-semibold">
+              <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-semibold">
                 ${category}
               </span>
               <span class="text-gray-500 text-xs flex items-center gap-1">
@@ -509,7 +554,7 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
                 ${time}
               </span>
             </div>
-            <h3 class="text-white font-semibold text-sm leading-snug line-clamp-3">
+            <h3 class="text-gray-900 font-semibold text-sm leading-snug line-clamp-3">
               ${title}
             </h3>
           </div>
@@ -522,9 +567,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
     async function runExample1() {
       const resultDiv = document.getElementById('result1');
       resultDiv.innerHTML = `
-        <div class="text-center py-8">
+        <div class="text-center py-8 bg-white rounded-xl border border-gray-200">
           <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-          <p class="mt-2 text-gray-400">Fetching headlines from Bold.dk...</p>
+          <p class="mt-2 text-gray-600">Fetching headlines from Bold.dk...</p>
         </div>
       `;
 
@@ -541,12 +586,12 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
 
         resultDiv.innerHTML = `
           <div class="space-y-6 fade-in">
-            <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-6">
-              <h3 class="text-xl font-bold mb-4 text-orange-400">✓ Successfully fetched ${headlines.length} headlines</h3>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 class="text-xl font-bold mb-4 text-orange-600">✓ Successfully fetched ${headlines.length} headlines</h3>
               <ul class="space-y-3">
                 ${headlines.map((headline, i) => `
-                  <li class="flex items-start gap-3 text-gray-300 hover:text-white transition">
-                    <span class="flex-shrink-0 w-6 h-6 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center text-xs font-bold">
+                  <li class="flex items-start gap-3 text-gray-700 hover:text-gray-900 transition">
+                    <span class="flex-shrink-0 w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold">
                       ${i + 1}
                     </span>
                     <span class="flex-1">${headline}</span>
@@ -555,34 +600,40 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
               </ul>
             </div>
 
-            <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
-              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2 text-gray-900">
+                <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                 </svg>
                 What you're seeing:
               </h4>
-              <ul class="space-y-2 text-gray-300 text-sm">
+              <ul class="space-y-2 text-gray-700 text-sm">
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Live data:</strong> Real headlines from Bold.dk, fetched in real-time</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Simple extraction:</strong> One CSS selector returned ${headlines.length} results</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Clean data:</strong> Pure text content, no HTML markup</span>
                 </li>
               </ul>
             </div>
+
+            <button
+              onclick="showTab(2)"
+              class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-6 py-3 rounded-lg font-semibold transition-all text-white shadow-md">
+              Next: Add Categories & Timestamps →
+            </button>
           </div>
         `;
       } catch (error) {
         resultDiv.innerHTML = `
-          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
-            <p class="text-red-400">❌ Error: ${error.message}</p>
+          <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <p class="text-red-600">❌ Error: ${error.message}</p>
           </div>
         `;
       }
@@ -592,9 +643,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
     async function runExample2() {
       const resultDiv = document.getElementById('result2');
       resultDiv.innerHTML = `
-        <div class="text-center py-8">
+        <div class="text-center py-8 bg-white rounded-xl border border-gray-200">
           <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-          <p class="mt-2 text-gray-400">Fetching enhanced data...</p>
+          <p class="mt-2 text-gray-600">Fetching enhanced data...</p>
         </div>
       `;
 
@@ -617,13 +668,13 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
 
         resultDiv.innerHTML = `
           <div class="space-y-6 fade-in">
-            <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-6">
-              <h3 class="text-xl font-bold mb-4 text-orange-400">✓ Successfully fetched ${articles.length} articles with metadata</h3>
+            <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+              <h3 class="text-xl font-bold mb-4 text-orange-600">✓ Successfully fetched ${articles.length} articles with metadata</h3>
               <div class="space-y-3">
                 ${articles.map((article, i) => `
-                  <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-orange-500/50 transition">
+                  <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-orange-400 transition">
                     <div class="flex items-center gap-3 mb-2 flex-wrap">
-                      <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-semibold">
+                      <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded text-xs font-semibold">
                         ${article.category}
                       </span>
                       <span class="text-gray-500 text-xs flex items-center gap-1">
@@ -633,40 +684,46 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
                         ${article.time}
                       </span>
                     </div>
-                    <p class="text-white font-medium">${article.title}</p>
+                    <p class="text-gray-900 font-medium">${article.title}</p>
                   </div>
                 `).join('')}
               </div>
             </div>
 
-            <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
-              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
-                <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+            <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2 text-gray-900">
+                <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                 </svg>
                 What's new:
               </h4>
-              <ul class="space-y-2 text-gray-300 text-sm">
+              <ul class="space-y-2 text-gray-700 text-sm">
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Multiple selectors:</strong> We extracted 3 different data points with one API call</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Structured data:</strong> Arrays are combined into article objects using .map()</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
+                  <span class="text-orange-600">→</span>
                   <span><strong>Rich metadata:</strong> Categories show article type, timestamps show when posted</span>
                 </li>
               </ul>
             </div>
+
+            <button
+              onclick="showTab(3)"
+              class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-6 py-3 rounded-lg font-semibold transition-all text-white shadow-md">
+              Next: Build Beautiful News Cards →
+            </button>
           </div>
         `;
       } catch (error) {
         resultDiv.innerHTML = `
-          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
-            <p class="text-red-400">❌ Error: ${error.message}</p>
+          <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <p class="text-red-600">❌ Error: ${error.message}</p>
           </div>
         `;
       }
@@ -676,9 +733,9 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
     async function runExample3() {
       const resultDiv = document.getElementById('result3');
       resultDiv.innerHTML = `
-        <div class="text-center py-8">
+        <div class="text-center py-8 bg-white rounded-xl border border-gray-200">
           <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-          <p class="mt-2 text-gray-400">Building news grid...</p>
+          <p class="mt-2 text-gray-600">Building news grid...</p>
         </div>
       `;
 
@@ -695,84 +752,69 @@ customElements.<span class="code-function">define</span>(<span class="code-strin
 
         const articles = data.overskrifter.slice(0, 12).map((title, i) => ({
           title,
-          category: data.kategorier[i] || 'General',
-          time: data.tidspunkter[i] || 'N/A'
+          category: data.kategorier[i] || "General",
+          time: data.tidspunkter[i] || "N/A",
         }));
 
         resultDiv.innerHTML = `
           <div class="fade-in space-y-6">
-            <div class="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-xl p-6">
-              <h3 class="text-2xl font-bold mb-2 text-orange-400">
+            <div class="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-xl p-6">
+              <h3 class="text-2xl font-bold mb-2 text-orange-600">
                 ✓ Successfully built ${articles.length} news cards
               </h3>
-              <p class="text-gray-400">Using custom Web Components with responsive grid layout</p>
+              <p class="text-gray-700">Using custom Web Components with responsive grid layout</p>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              ${articles.map(article => `
+              ${
+          articles.map((article) => `
                 <news-card
-                  title="${article.title.replace(/"/g, '&quot;')}"
+                  title="${article.title.replace(/"/g, "&quot;")}"
                   category="${article.category}"
                   time="${article.time}"
                 ></news-card>
-              `).join('')}
+              `).join("")
+        }
             </div>
 
-            <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-6">
-              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
-                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2 text-gray-900">
+                <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                 </svg>
                 What we accomplished:
               </h4>
-              <ul class="space-y-2 text-gray-300 text-sm">
+              <ul class="space-y-2 text-gray-700 text-sm">
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">✓</span>
+                  <span class="text-orange-600">✓</span>
                   <span><strong>Web Components:</strong> Reusable &lt;news-card&gt; custom element</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">✓</span>
+                  <span class="text-orange-600">✓</span>
                   <span><strong>Responsive Grid:</strong> Adapts from 1 to 4 columns based on screen size</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">✓</span>
+                  <span class="text-orange-600">✓</span>
                   <span><strong>Hover Effects:</strong> Interactive cards with smooth transitions</span>
                 </li>
                 <li class="flex items-start gap-2">
-                  <span class="text-orange-400">✓</span>
+                  <span class="text-orange-600">✓</span>
                   <span><strong>Production Ready:</strong> This code can be used in real projects!</span>
                 </li>
               </ul>
             </div>
 
-            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
-              <h4 class="font-bold mb-3 text-lg text-orange-400">🚀 Next Steps</h4>
-              <p class="text-gray-300 mb-4">Now that you know how to extract content, try these ideas:</p>
-              <ul class="space-y-2 text-gray-300 text-sm">
-                <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
-                  <span>Extract content from other websites (use browser DevTools to find CSS selectors)</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
-                  <span>Build a personal news aggregator with multiple sources</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
-                  <span>Add search/filter functionality to the news grid</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-orange-400">→</span>
-                  <span>Store articles in localStorage for offline reading</span>
-                </li>
-              </ul>
-            </div>
+            <button
+              onclick="showTab(4)"
+              class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-6 py-3 rounded-lg font-semibold transition-all text-white shadow-md">
+              Next: View API Reference →
+            </button>
           </div>
         `;
       } catch (error) {
         resultDiv.innerHTML = `
-          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
-            <p class="text-red-400">❌ Error: ${error.message}</p>
+          <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+            <p class="text-red-600">❌ Error: ${error.message}</p>
           </div>
         `;
       }
