@@ -24,7 +24,7 @@ export async function handleHtml(req: Request): Promise<Response> {
 
   // Validate required parameters
   if (!from) {
-    return errorResponse("Please supply from and extract parameters", 404);
+    return errorResponse("Please supply from parameter", 404);
   }
 
   try {

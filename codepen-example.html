@@ -1,201 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wikipedia Explorer - Extract Content Demo</title>
-</head>
-<body>
-<!-- ============================================ -->
-<!-- HTML - Copy this into CodePen HTML section -->
-<!-- ============================================ -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia Explorer - Extract Content Demo</title>
+  </head>
+  <body>
+    <!-- ============================================ -->
+    <!-- HTML - Copy this into CodePen HTML section -->
+    <!-- ============================================ -->
 
-<div class="app-container">
-  <header class="app-header">
-    <h1>📚 Wikipedia Explorer</h1>
-    <p class="subtitle">Powered by extract-content API</p>
-  </header>
+    <div class="app-container">
+      <header class="app-header">
+        <h1>📚 Wikipedia Explorer</h1>
+        <p class="subtitle">Powered by extract-content API</p>
+      </header>
 
-  <search-bar></search-bar>
+      <search-bar></search-bar>
 
-  <disambiguation-links></disambiguation-links>
+      <disambiguation-links></disambiguation-links>
 
-  <loading-spinner></loading-spinner>
+      <loading-spinner></loading-spinner>
 
-  <error-message></error-message>
+      <error-message></error-message>
 
-  <article-card></article-card>
+      <article-card></article-card>
 
-  <footer class="app-footer">
-    <p>Built with <a href="https://extract-content.netsi1964.deno.net/" target="_blank">extract-content API</a></p>
-    <p>Try it: <code>https://extract-content.netsi1964.deno.net/</code></p>
-  </footer>
-</div>
+      <footer class="app-footer">
+        <p>
+          Built with <a href="https://extract-content.netsi1964.deno.net/" target="_blank"
+          >extract-content API</a>
+        </p>
+        <p>Try it: <code>https://extract-content.netsi1964.deno.net/</code></p>
+      </footer>
+    </div>
 
-<!-- ============================================ -->
-<!-- CSS - Copy this into CodePen CSS section -->
-<!-- ============================================ -->
+    <!-- ============================================ -->
+    <!-- CSS - Copy this into CodePen CSS section -->
+    <!-- ============================================ -->
 
-<style>
-/* Modern CSS with Container Queries */
-:root {
-  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --primary-color: #667eea;
-  --secondary-color: #764ba2;
-  --surface-color: #ffffff;
-  --text-primary: #1a1a1a;
-  --text-secondary: #666;
-  --error-color: #ff4757;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    <style>
+      /* Modern CSS with Container Queries */
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --primary-color: #667eea;
+        --secondary-color: #764ba2;
+        --surface-color: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666;
+        --error-color: #ff4757;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--primary-gradient);
-  min-height: 100vh;
-  padding: clamp(1rem, 3vw, 2rem);
-  line-height: 1.6;
-  color: var(--text-primary);
-}
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--primary-gradient);
+        min-height: 100vh;
+        padding: clamp(1rem, 3vw, 2rem);
+        line-height: 1.6;
+        color: var(--text-primary);
+      }
 
-/* Container for the entire app */
-.app-container {
-  max-width: min(900px, 100%);
-  margin: 0 auto;
-  container-type: inline-size;
-  container-name: app;
-}
+      /* Container for the entire app */
+      .app-container {
+        max-width: min(900px, 100%);
+        margin: 0 auto;
+        container-type: inline-size;
+        container-name: app;
+      }
 
-/* Header */
-.app-header {
-  text-align: center;
-  color: white;
-  margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
-  animation: fadeIn 0.6s ease-in;
-}
+      /* Header */
+      .app-header {
+        text-align: center;
+        color: white;
+        margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
+        animation: fadeIn 0.6s ease-in;
+      }
 
-.app-header h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 800;
-  margin-block-end: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-  letter-spacing: -0.02em;
-}
+      .app-header h1 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin-block-end: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        letter-spacing: -0.02em;
+      }
 
-.subtitle {
-  font-size: clamp(1rem, 2.5vw, 1.2rem);
-  opacity: 0.95;
-  font-weight: 500;
-}
+      .subtitle {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        opacity: 0.95;
+        font-weight: 500;
+      }
 
-/* Footer */
-.app-footer {
-  text-align: center;
-  color: white;
-  margin-block-start: clamp(2rem, 5vw, 3rem);
-  padding-block-start: 1.5rem;
-  border-block-start: 1px solid rgba(255,255,255,0.2);
-  font-size: clamp(0.85rem, 2vw, 0.95rem);
-}
+      /* Footer */
+      .app-footer {
+        text-align: center;
+        color: white;
+        margin-block-start: clamp(2rem, 5vw, 3rem);
+        padding-block-start: 1.5rem;
+        border-block-start: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
+      }
 
-.app-footer a {
-  color: white;
-  text-decoration: underline;
-  transition: opacity 0.2s;
-}
+      .app-footer a {
+        color: white;
+        text-decoration: underline;
+        transition: opacity 0.2s;
+      }
 
-.app-footer a:hover {
-  opacity: 0.8;
-}
+      .app-footer a:hover {
+        opacity: 0.8;
+      }
 
-.app-footer code {
-  background: rgba(255,255,255,0.2);
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.9em;
-  font-family: 'Courier New', monospace;
-}
+      .app-footer code {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.9em;
+        font-family: "Courier New", monospace;
+      }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
+      @keyframes shake {
+        0%, 100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-10px);
+        }
+        75% {
+          transform: translateX(10px);
+        }
+      }
 
-/* Container Query for responsive layout */
-@container app (min-width: 600px) {
-  .search-form {
-    grid-template-columns: 1fr auto auto !important;
-  }
-}
-</style>
+      /* Container Query for responsive layout */
+      @container app (min-width: 600px) {
+        .search-form {
+          grid-template-columns: 1fr auto auto !important;
+        }
+      }
+    </style>
 
-<!-- ============================================ -->
-<!-- JavaScript - Copy this into CodePen JS section -->
-<!-- ============================================ -->
+    <!-- ============================================ -->
+    <!-- JavaScript - Copy this into CodePen JS section -->
+    <!-- ============================================ -->
 
-<script>
-const API_BASE = 'https://extract-content.netsi1964.deno.net/';
-const WIKI_BASE = 'https://en.wikipedia.org/wiki/';
+    <script>
+      const API_BASE = "https://extract-content.netsi1964.deno.net/";
+      const WIKI_BASE = "https://en.wikipedia.org/wiki/";
 
-// Extract configuration
-const extractConfig = {
-  title: "h1#firstHeading",
-  intro: ".mw-parser-output > p",
-  image: ".infobox img",
-  categories: ".catlinks li a",
-  disambiguation: ".mw-parser-output > ul > li > a"
-};
+      // Extract configuration
+      const extractConfig = {
+        title: "h1#firstHeading",
+        intro: ".mw-parser-output > p",
+        image: ".infobox img",
+        categories: ".catlinks li a",
+        disambiguation: ".mw-parser-output > ul > li > a",
+      };
 
-// ============================================
-// Search Bar Web Component
-// ============================================
-class SearchBar extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+      // ============================================
+      // Search Bar Web Component
+      // ============================================
+      class SearchBar extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
 
-  connectedCallback() {
-    this.render();
-    this.setupEventListeners();
-  }
+        connectedCallback() {
+          this.render();
+          this.setupEventListeners();
+        }
 
-  render() {
-    this.shadowRoot.innerHTML = `
+        render() {
+          this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: block;
@@ -288,54 +303,58 @@ class SearchBar extends HTMLElement {
         </button>
       </form>
     `;
-  }
+        }
 
-  setupEventListeners() {
-    const form = this.shadowRoot.querySelector('form');
-    const input = this.shadowRoot.querySelector('#searchInput');
-    const randomBtn = this.shadowRoot.querySelector('#randomBtn');
+        setupEventListeners() {
+          const form = this.shadowRoot.querySelector("form");
+          const input = this.shadowRoot.querySelector("#searchInput");
+          const randomBtn = this.shadowRoot.querySelector("#randomBtn");
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const topic = input.value.trim();
-      if (topic) {
-        this.dispatchEvent(new CustomEvent('search', {
-          detail: { topic },
-          bubbles: true,
-          composed: true
-        }));
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const topic = input.value.trim();
+            if (topic) {
+              this.dispatchEvent(
+                new CustomEvent("search", {
+                  detail: { topic },
+                  bubbles: true,
+                  composed: true,
+                }),
+              );
+            }
+          });
+
+          randomBtn.addEventListener("click", () => {
+            this.dispatchEvent(
+              new CustomEvent("random", {
+                bubbles: true,
+                composed: true,
+              }),
+            );
+          });
+        }
+
+        setValue(value) {
+          const input = this.shadowRoot.querySelector("#searchInput");
+          if (input) input.value = value;
+        }
       }
-    });
 
-    randomBtn.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('random', {
-        bubbles: true,
-        composed: true
-      }));
-    });
-  }
+      // ============================================
+      // Loading Spinner Web Component
+      // ============================================
+      class LoadingSpinner extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
 
-  setValue(value) {
-    const input = this.shadowRoot.querySelector('#searchInput');
-    if (input) input.value = value;
-  }
-}
+        connectedCallback() {
+          this.render();
+        }
 
-// ============================================
-// Loading Spinner Web Component
-// ============================================
-class LoadingSpinner extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
-
-  connectedCallback() {
-    this.render();
-  }
-
-  render() {
-    this.shadowRoot.innerHTML = `
+        render() {
+          this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: none;
@@ -377,32 +396,32 @@ class LoadingSpinner extends HTMLElement {
       <div class="spinner"></div>
       <p>Loading amazing content...</p>
     `;
-  }
+        }
 
-  show() {
-    this.setAttribute('active', '');
-  }
+        show() {
+          this.setAttribute("active", "");
+        }
 
-  hide() {
-    this.removeAttribute('active');
-  }
-}
+        hide() {
+          this.removeAttribute("active");
+        }
+      }
 
-// ============================================
-// Error Message Web Component
-// ============================================
-class ErrorMessage extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+      // ============================================
+      // Error Message Web Component
+      // ============================================
+      class ErrorMessage extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
 
-  connectedCallback() {
-    this.render();
-  }
+        connectedCallback() {
+          this.render();
+        }
 
-  render() {
-    this.shadowRoot.innerHTML = `
+        render() {
+          this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: none;
@@ -470,34 +489,34 @@ class ErrorMessage extends HTMLElement {
         </div>
       </div>
     `;
-  }
+        }
 
-  show(message) {
-    const text = this.shadowRoot.querySelector('#errorText');
-    text.textContent = message;
-    this.setAttribute('active', '');
-  }
+        show(message) {
+          const text = this.shadowRoot.querySelector("#errorText");
+          text.textContent = message;
+          this.setAttribute("active", "");
+        }
 
-  hide() {
-    this.removeAttribute('active');
-  }
-}
+        hide() {
+          this.removeAttribute("active");
+        }
+      }
 
-// ============================================
-// Disambiguation Links Web Component
-// ============================================
-class DisambiguationLinks extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+      // ============================================
+      // Disambiguation Links Web Component
+      // ============================================
+      class DisambiguationLinks extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
 
-  connectedCallback() {
-    this.render();
-  }
+        connectedCallback() {
+          this.render();
+        }
 
-  render() {
-    this.shadowRoot.innerHTML = `
+        render() {
+          this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: none;
@@ -585,66 +604,68 @@ class DisambiguationLinks extends HTMLElement {
         <div class="links" id="linksContainer"></div>
       </div>
     `;
-  }
+        }
 
-  setLinks(links, title) {
-    const container = this.shadowRoot.querySelector('#linksContainer');
-    const titleText = this.shadowRoot.querySelector('#titleText');
+        setLinks(links, title) {
+          const container = this.shadowRoot.querySelector("#linksContainer");
+          const titleText = this.shadowRoot.querySelector("#titleText");
 
-    if (title) {
-      titleText.textContent = `"${title}" may refer to:`;
-    }
+          if (title) {
+            titleText.textContent = `"${title}" may refer to:`;
+          }
 
-    container.innerHTML = links
-      .map((link, index) => `
+          container.innerHTML = links
+            .map((link, index) => `
         <button class="link" data-topic="${this.escapeHtml(link)}" data-index="${index}">
           ${this.escapeHtml(link)}
         </button>
       `)
-      .join('');
+            .join("");
 
-    // Add click event listeners
-    const buttons = container.querySelectorAll('.link');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const topic = button.dataset.topic;
-        this.dispatchEvent(new CustomEvent('select', {
-          detail: { topic },
-          bubbles: true,
-          composed: true
-        }));
-      });
-    });
+          // Add click event listeners
+          const buttons = container.querySelectorAll(".link");
+          buttons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const topic = button.dataset.topic;
+              this.dispatchEvent(
+                new CustomEvent("select", {
+                  detail: { topic },
+                  bubbles: true,
+                  composed: true,
+                }),
+              );
+            });
+          });
 
-    this.setAttribute('active', '');
-  }
+          this.setAttribute("active", "");
+        }
 
-  escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
+        escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
 
-  hide() {
-    this.removeAttribute('active');
-  }
-}
+        hide() {
+          this.removeAttribute("active");
+        }
+      }
 
-// ============================================
-// Article Card Web Component
-// ============================================
-class ArticleCard extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
+      // ============================================
+      // Article Card Web Component
+      // ============================================
+      class ArticleCard extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: "open" });
+        }
 
-  connectedCallback() {
-    this.render();
-  }
+        connectedCallback() {
+          this.render();
+        }
 
-  render() {
-    this.shadowRoot.innerHTML = `
+        render() {
+          this.shadowRoot.innerHTML = `
       <style>
         :host {
           display: none;
@@ -785,235 +806,261 @@ class ArticleCard extends HTMLElement {
         </div>
       </article>
     `;
-  }
-
-  setData(data, url) {
-    const title = this.shadowRoot.querySelector('#title');
-    const intro = this.shadowRoot.querySelector('#intro');
-    const image = this.shadowRoot.querySelector('#image');
-    const categories = this.shadowRoot.querySelector('#categories');
-    const readMore = this.shadowRoot.querySelector('#readMore');
-
-    // Set title
-    title.textContent = data.title;
-
-    // Set intro
-    intro.innerHTML = this.formatIntro(data.intro);
-
-    // Set image
-    if (data.image) {
-      const imageUrl = this.extractImageUrl(Array.isArray(data.image) ? data.image[0] : data.image);
-      if (imageUrl) {
-        image.src = imageUrl;
-        image.alt = data.title;
-      } else {
-        image.removeAttribute('src');
-      }
-    } else {
-      image.removeAttribute('src');
-    }
-
-    // Set categories
-    if (data.categories && data.categories.length > 0) {
-      const categoryList = Array.isArray(data.categories) ? data.categories : [data.categories];
-      categories.innerHTML = categoryList
-        .slice(0, 10)
-        .map((cat, index) => `<button class="category-tag" data-topic="${this.escapeHtml(cat)}" data-index="${index}">${this.escapeHtml(cat)}</button>`)
-        .join('');
-
-      // Add click event listeners to category tags
-      const categoryButtons = categories.querySelectorAll('.category-tag');
-      categoryButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const topic = button.dataset.topic;
-          this.dispatchEvent(new CustomEvent('select', {
-            detail: { topic },
-            bubbles: true,
-            composed: true
-          }));
-        });
-      });
-    } else {
-      categories.innerHTML = '';
-    }
-
-    // Set read more link
-    readMore.href = url;
-
-    this.setAttribute('active', '');
-  }
-
-  formatIntro(intro) {
-    if (Array.isArray(intro)) {
-      return intro
-        .slice(0, 3)
-        .filter(p => p.trim().length > 0)
-        .map(p => `<p part="paragraph">${this.escapeHtml(p)}</p>`)
-        .join('');
-    }
-    return `<p part="paragraph">${this.escapeHtml(intro)}</p>`;
-  }
-
-  extractImageUrl(imageHtml) {
-    if (!imageHtml) return null;
-    const match = imageHtml.match(/src="([^"]+)"/);
-    if (match) {
-      let url = match[1];
-      if (url.startsWith('//')) {
-        url = 'https:' + url;
-      }
-      return url;
-    }
-    return null;
-  }
-
-  escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  hide() {
-    this.removeAttribute('active');
-  }
-}
-
-// ============================================
-// Register Web Components
-// ============================================
-customElements.define('search-bar', SearchBar);
-customElements.define('loading-spinner', LoadingSpinner);
-customElements.define('error-message', ErrorMessage);
-customElements.define('disambiguation-links', DisambiguationLinks);
-customElements.define('article-card', ArticleCard);
-
-// ============================================
-// App Controller
-// ============================================
-class App {
-  constructor() {
-    this.searchBar = document.querySelector('search-bar');
-    this.loading = document.querySelector('loading-spinner');
-    this.error = document.querySelector('error-message');
-    this.disambiguation = document.querySelector('disambiguation-links');
-    this.article = document.querySelector('article-card');
-
-    this.setupEventListeners();
-    this.init();
-  }
-
-  setupEventListeners() {
-    document.addEventListener('search', (e) => {
-      this.fetchArticle(e.detail.topic);
-    });
-
-    document.addEventListener('random', () => {
-      this.fetchRandom();
-    });
-
-    document.addEventListener('select', (e) => {
-      // Update search bar and fetch the selected topic
-      this.searchBar.setValue(e.detail.topic);
-      this.fetchArticle(e.detail.topic);
-    });
-  }
-
-  async init() {
-    // Load initial article
-    await this.fetchArticle('Deno_(software)');
-  }
-
-  async fetchArticle(topic) {
-    this.loading.show();
-    this.error.hide();
-    this.article.hide();
-    this.disambiguation.hide();
-
-    const wikiUrl = `${WIKI_BASE}${encodeURIComponent(topic)}`;
-    const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
-
-    try {
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          throw new Error(`We couldn't find "${topic}". Try checking the spelling or searching for something else!`);
         }
-        throw new Error(`Oops! Something went wrong while fetching the article. Please try again.`);
+
+        setData(data, url) {
+          const title = this.shadowRoot.querySelector("#title");
+          const intro = this.shadowRoot.querySelector("#intro");
+          const image = this.shadowRoot.querySelector("#image");
+          const categories = this.shadowRoot.querySelector("#categories");
+          const readMore = this.shadowRoot.querySelector("#readMore");
+
+          // Set title
+          title.textContent = data.title;
+
+          // Set intro
+          intro.innerHTML = this.formatIntro(data.intro);
+
+          // Set image
+          if (data.image) {
+            const imageUrl = this.extractImageUrl(
+              Array.isArray(data.image) ? data.image[0] : data.image,
+            );
+            if (imageUrl) {
+              image.src = imageUrl;
+              image.alt = data.title;
+            } else {
+              image.removeAttribute("src");
+            }
+          } else {
+            image.removeAttribute("src");
+          }
+
+          // Set categories
+          if (data.categories && data.categories.length > 0) {
+            const categoryList = Array.isArray(data.categories)
+              ? data.categories
+              : [data.categories];
+            categories.innerHTML = categoryList
+              .slice(0, 10)
+              .map((cat, index) =>
+                `<button class="category-tag" data-topic="${
+                  this.escapeHtml(cat)
+                }" data-index="${index}">${this.escapeHtml(cat)}</button>`
+              )
+              .join("");
+
+            // Add click event listeners to category tags
+            const categoryButtons = categories.querySelectorAll(".category-tag");
+            categoryButtons.forEach((button) => {
+              button.addEventListener("click", () => {
+                const topic = button.dataset.topic;
+                this.dispatchEvent(
+                  new CustomEvent("select", {
+                    detail: { topic },
+                    bubbles: true,
+                    composed: true,
+                  }),
+                );
+              });
+            });
+          } else {
+            categories.innerHTML = "";
+          }
+
+          // Set read more link
+          readMore.href = url;
+
+          this.setAttribute("active", "");
+        }
+
+        formatIntro(intro) {
+          if (Array.isArray(intro)) {
+            return intro
+              .slice(0, 3)
+              .filter((p) => p.trim().length > 0)
+              .map((p) => `<p part="paragraph">${this.escapeHtml(p)}</p>`)
+              .join("");
+          }
+          return `<p part="paragraph">${this.escapeHtml(intro)}</p>`;
+        }
+
+        extractImageUrl(imageHtml) {
+          if (!imageHtml) return null;
+          const match = imageHtml.match(/src="([^"]+)"/);
+          if (match) {
+            let url = match[1];
+            if (url.startsWith("//")) {
+              url = "https:" + url;
+            }
+            return url;
+          }
+          return null;
+        }
+
+        escapeHtml(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        hide() {
+          this.removeAttribute("active");
+        }
       }
 
-      const data = await response.json();
+      // ============================================
+      // Register Web Components
+      // ============================================
+      customElements.define("search-bar", SearchBar);
+      customElements.define("loading-spinner", LoadingSpinner);
+      customElements.define("error-message", ErrorMessage);
+      customElements.define("disambiguation-links", DisambiguationLinks);
+      customElements.define("article-card", ArticleCard);
 
-      if (!data.title || data.title === '') {
-        throw new Error(`No results for "${topic}". Maybe try a different search term?`);
+      // ============================================
+      // App Controller
+      // ============================================
+      class App {
+        constructor() {
+          this.searchBar = document.querySelector("search-bar");
+          this.loading = document.querySelector("loading-spinner");
+          this.error = document.querySelector("error-message");
+          this.disambiguation = document.querySelector("disambiguation-links");
+          this.article = document.querySelector("article-card");
+
+          this.setupEventListeners();
+          this.init();
+        }
+
+        setupEventListeners() {
+          document.addEventListener("search", (e) => {
+            this.fetchArticle(e.detail.topic);
+          });
+
+          document.addEventListener("random", () => {
+            this.fetchRandom();
+          });
+
+          document.addEventListener("select", (e) => {
+            // Update search bar and fetch the selected topic
+            this.searchBar.setValue(e.detail.topic);
+            this.fetchArticle(e.detail.topic);
+          });
+        }
+
+        async init() {
+          // Load initial article
+          await this.fetchArticle("Deno_(software)");
+        }
+
+        async fetchArticle(topic) {
+          this.loading.show();
+          this.error.hide();
+          this.article.hide();
+          this.disambiguation.hide();
+
+          const wikiUrl = `${WIKI_BASE}${encodeURIComponent(topic)}`;
+          const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${
+            encodeURIComponent(JSON.stringify(extractConfig))
+          }`;
+
+          try {
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+              if (response.status === 404) {
+                throw new Error(
+                  `We couldn't find "${topic}". Try checking the spelling or searching for something else!`,
+                );
+              }
+              throw new Error(
+                `Oops! Something went wrong while fetching the article. Please try again.`,
+              );
+            }
+
+            const data = await response.json();
+
+            if (!data.title || data.title === "") {
+              throw new Error(
+                `No results for "${topic}". Maybe try a different search term?`,
+              );
+            }
+
+            // Check if this is a disambiguation page
+            const isDisambiguation = data.title.includes("disambiguation") ||
+              (data.intro && typeof data.intro === "string" &&
+                data.intro.includes("may refer to"));
+
+            this.loading.hide();
+
+            if (
+              isDisambiguation && data.disambiguation &&
+              Array.isArray(data.disambiguation) && data.disambiguation.length > 0
+            ) {
+              // Show disambiguation links
+              this.disambiguation.setLinks(
+                data.disambiguation,
+                data.title.replace(" (disambiguation)", ""),
+              );
+              // Still show the article but with disambiguation context
+              this.article.setData(data, wikiUrl);
+            } else {
+              // Regular article
+              this.article.setData(data, wikiUrl);
+            }
+          } catch (err) {
+            console.error("Error:", err);
+            this.loading.hide();
+            this.error.show(err.message);
+          }
+        }
+
+        async fetchRandom() {
+          this.loading.show();
+          this.error.hide();
+          this.article.hide();
+          this.disambiguation.hide();
+
+          const wikiUrl = `${WIKI_BASE}Special:Random`;
+          const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${
+            encodeURIComponent(JSON.stringify(extractConfig))
+          }`;
+
+          try {
+            const response = await fetch(apiUrl);
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Update search input with the article title
+            if (data.title) {
+              this.searchBar.setValue(data.title.replace(/ /g, "_"));
+            }
+
+            const articleUrl = `${WIKI_BASE}${
+              encodeURIComponent(data.title.replace(/ /g, "_"))
+            }`;
+
+            this.loading.hide();
+            this.article.setData(data, articleUrl);
+          } catch (err) {
+            console.error("Error:", err);
+            this.loading.hide();
+            this.error.show(err.message);
+          }
+        }
       }
 
-      // Check if this is a disambiguation page
-      const isDisambiguation = data.title.includes('disambiguation') ||
-                               (data.intro && typeof data.intro === 'string' && data.intro.includes('may refer to'));
-
-      this.loading.hide();
-
-      if (isDisambiguation && data.disambiguation && Array.isArray(data.disambiguation) && data.disambiguation.length > 0) {
-        // Show disambiguation links
-        this.disambiguation.setLinks(data.disambiguation, data.title.replace(' (disambiguation)', ''));
-        // Still show the article but with disambiguation context
-        this.article.setData(data, wikiUrl);
+      // Initialize app when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => new App());
       } else {
-        // Regular article
-        this.article.setData(data, wikiUrl);
+        new App();
       }
-
-    } catch (err) {
-      console.error('Error:', err);
-      this.loading.hide();
-      this.error.show(err.message);
-    }
-  }
-
-  async fetchRandom() {
-    this.loading.show();
-    this.error.hide();
-    this.article.hide();
-    this.disambiguation.hide();
-
-    const wikiUrl = `${WIKI_BASE}Special:Random`;
-    const apiUrl = `${API_BASE}?from=${encodeURIComponent(wikiUrl)}&extract=${encodeURIComponent(JSON.stringify(extractConfig))}`;
-
-    try {
-      const response = await fetch(apiUrl);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      // Update search input with the article title
-      if (data.title) {
-        this.searchBar.setValue(data.title.replace(/ /g, '_'));
-      }
-
-      const articleUrl = `${WIKI_BASE}${encodeURIComponent(data.title.replace(/ /g, '_'))}`;
-
-      this.loading.hide();
-      this.article.setData(data, articleUrl);
-
-    } catch (err) {
-      console.error('Error:', err);
-      this.loading.hide();
-      this.error.show(err.message);
-    }
-  }
-}
-
-// Initialize app when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => new App());
-} else {
-  new App();
-}
-</script>
-
-</body>
+    </script>
+  </body>
 </html>

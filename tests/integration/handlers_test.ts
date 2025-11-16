@@ -56,3 +56,80 @@ Deno.test("OPTIONS request returns 204", async () => {
   assertEquals(res.status, 204);
   assertEquals(res.headers.get("Access-Control-Allow-Origin"), "*");
 });
+
+// URL Validation Security Tests
+Deno.test("GET /raw - blocks localhost URLs (SSRF protection)", async () => {
+  const req = new Request("http://localhost:8000/raw?from=http://localhost:3000");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks 127.0.0.1 URLs (SSRF protection)", async () => {
+  const req = new Request("http://localhost:8000/raw?from=http://127.0.0.1:8080");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks AWS metadata URL (SSRF protection)", async () => {
+  const req = new Request(
+    "http://localhost:8000/raw?from=http://169.254.169.254/latest/meta-data/",
+  );
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks private Class A network (10.x.x.x)", async () => {
+  const req = new Request("http://localhost:8000/raw?from=http://10.0.0.1");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks private Class B network (172.16-31.x.x)", async () => {
+  const req = new Request("http://localhost:8000/raw?from=http://172.16.0.1");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks private Class C network (192.168.x.x)", async () => {
+  const req = new Request("http://localhost:8000/raw?from=http://192.168.1.1");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("private IP addresses"), true);
+});
+
+Deno.test("GET /raw - blocks file:// protocol", async () => {
+  const req = new Request(
+    "http://localhost:8000/raw?from=file:///etc/passwd",
+  );
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("Unsupported protocol"), true);
+});
+
+Deno.test("GET /raw - rejects invalid URL format", async () => {
+  const req = new Request("http://localhost:8000/raw?from=not-a-valid-url");
+  const res = await handler(req);
+
+  assertEquals(res.status, 404);
+  const text = await res.text();
+  assertEquals(text.includes("Invalid URL format"), true);
+});
