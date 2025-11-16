@@ -792,7 +792,55 @@ export function generateLandingPage(baseUrl: string): string {
               const list = document.createElement('div');
               list.style.cssText = 'background:rgba(255,255,255,0.1);padding:15px;border-radius:8px;';
 
-              Object.entries(data).forEach(([key, value]) => {
+              // Parse data and identify naming conventions (_link, _src, _alt)
+              const processed = new Set();
+              const items = [];
+
+              Object.keys(data).forEach(key => {
+                if (processed.has(key)) return;
+
+                // Skip companion fields (will be processed with main field)
+                if (key.endsWith('_link') || key.endsWith('_alt')) {
+                  processed.add(key);
+                  return;
+                }
+
+                // Handle _src fields (can be standalone)
+                if (key.endsWith('_src')) {
+                  const baseKey = key.replace(/_src$/, '');
+                  const value = data[key];
+                  const texts = data[baseKey];
+                  const alts = data[baseKey + '_alt'];
+
+                  processed.add(key);
+                  if (texts) processed.add(baseKey);
+                  if (alts) processed.add(baseKey + '_alt');
+
+                  items.push({
+                    key: baseKey || key.replace(/_src$/, ''),
+                    value: texts,
+                    srcs: value,
+                    alts: alts
+                  });
+                  return;
+                }
+
+                // Regular field - check for companions
+                const value = data[key];
+                const links = data[key + '_link'];
+                const srcs = data[key + '_src'];
+                const alts = data[key + '_alt'];
+
+                processed.add(key);
+                if (links) processed.add(key + '_link');
+                if (srcs) processed.add(key + '_src');
+                if (alts) processed.add(key + '_alt');
+
+                items.push({ key, value, links, srcs, alts });
+              });
+
+              // Render items
+              items.forEach(({ key, value, links, srcs, alts }) => {
                 const item = document.createElement('div');
                 item.style.cssText = 'margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid rgba(255,255,255,0.2);';
 
@@ -803,18 +851,82 @@ export function generateLandingPage(baseUrl: string): string {
                 const content = document.createElement('div');
                 content.style.cssText = 'font-size:14px;line-height:1.5;';
 
-                if (Array.isArray(value)) {
+                if (Array.isArray(value) || Array.isArray(srcs)) {
                   const ul = document.createElement('ul');
-                  ul.style.cssText = 'margin:0;padding-left:20px;';
-                  value.forEach(v => {
+                  ul.style.cssText = 'margin:0;padding-left:0;list-style:none;';
+
+                  const length = Math.max(
+                    Array.isArray(value) ? value.length : 0,
+                    Array.isArray(srcs) ? srcs.length : 0
+                  );
+
+                  for (let i = 0; i < length; i++) {
                     const li = document.createElement('li');
-                    li.textContent = v;
-                    li.style.cssText = 'margin:4px 0;';
+                    li.style.cssText = 'margin:8px 0;padding:8px;background:rgba(255,255,255,0.05);border-radius:4px;';
+
+                    const v = Array.isArray(value) ? value[i] : value;
+                    const link = Array.isArray(links) ? links[i] : links;
+                    const src = Array.isArray(srcs) ? srcs[i] : srcs;
+                    const alt = Array.isArray(alts) ? alts[i] : alts;
+
+                    // Render image if src exists
+                    if (src) {
+                      const img = document.createElement('img');
+                      img.src = src;
+                      if (alt) img.alt = alt;
+                      img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
+                      li.appendChild(img);
+
+                      if (v) {
+                        const caption = document.createElement('div');
+                        caption.textContent = v;
+                        caption.style.cssText = 'margin-top:6px;font-size:13px;opacity:0.9;';
+                        li.appendChild(caption);
+                      }
+                    }
+                    // Render link if link exists
+                    else if (link && v) {
+                      const a = document.createElement('a');
+                      a.href = link;
+                      a.textContent = v;
+                      a.target = '_blank';
+                      a.style.cssText = 'color:white;text-decoration:underline;';
+                      li.appendChild(a);
+                    }
+                    // Regular text
+                    else if (v) {
+                      li.textContent = v;
+                    }
+
                     ul.appendChild(li);
-                  });
+                  }
+
                   content.appendChild(ul);
-                } else {
-                  content.textContent = value;
+                } else if (value || srcs) {
+                  // Single value
+                  if (srcs) {
+                    const img = document.createElement('img');
+                    img.src = srcs;
+                    if (alts) img.alt = alts;
+                    img.style.cssText = 'max-width:100%;height:auto;border-radius:4px;display:block;';
+                    content.appendChild(img);
+
+                    if (value) {
+                      const caption = document.createElement('div');
+                      caption.textContent = value;
+                      caption.style.cssText = 'margin-top:6px;font-size:13px;opacity:0.9;';
+                      content.appendChild(caption);
+                    }
+                  } else if (links) {
+                    const a = document.createElement('a');
+                    a.href = links;
+                    a.textContent = value;
+                    a.target = '_blank';
+                    a.style.cssText = 'color:white;text-decoration:underline;';
+                    content.appendChild(a);
+                  } else {
+                    content.textContent = value;
+                  }
                 }
 
                 item.appendChild(label);
