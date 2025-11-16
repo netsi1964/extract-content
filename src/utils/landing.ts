@@ -849,6 +849,19 @@ export function generateLandingPage(baseUrl: string): string {
         const extract = JSON.parse(extractJson);
         const apiUrl = buildUrl(fromUrl, extract, '/');
 
+        // Extract domain name for intelligent default
+        let defaultName = 'Extract Content';
+        try {
+          const url = new URL(fromUrl);
+          defaultName = url.hostname.replace('www.', '');
+        } catch (e) {
+          // Keep default if URL parsing fails
+        }
+
+        // Prompt user for bookmarklet name
+        const bookmarkletName = prompt('Name your bookmarklet:', defaultName);
+        if (!bookmarkletName) return; // User cancelled
+
         // Create the bookmarklet code
         const bookmarkletCode = \`(function(){
           const apiUrl = '\${apiUrl.replace(/'/g, "\\\\'")}';
@@ -1055,6 +1068,7 @@ export function generateLandingPage(baseUrl: string): string {
         // Update link
         const link = document.getElementById('bookmarkletLink');
         link.href = bookmarkletUrl;
+        link.textContent = '📌 ' + bookmarkletName;
 
         // Show container
         document.getElementById('bookmarkletContainer').classList.add('active');
