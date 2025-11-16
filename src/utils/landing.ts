@@ -928,15 +928,18 @@ export function generateLandingPage(baseUrl: string): string {
                   const baseKey = key.replace(/_src$/, '');
                   const value = data[key];
                   const texts = data[baseKey];
+                  const links = data[baseKey + '_link'];
                   const alts = data[baseKey + '_alt'];
 
                   processed.add(key);
                   if (texts) processed.add(baseKey);
+                  if (links) processed.add(baseKey + '_link');
                   if (alts) processed.add(baseKey + '_alt');
 
                   items.push({
                     key: baseKey || key.replace(/_src$/, ''),
                     value: texts,
+                    links: links,
                     srcs: value,
                     alts: alts
                   });
