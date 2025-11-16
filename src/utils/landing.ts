@@ -335,8 +335,8 @@ export function generateLandingPage(baseUrl: string): string {
         <label for="extractJson">Extract (JSON):</label>
         <textarea
           id="extractJson"
-          placeholder='{"title": "h1", "intro": ".mw-parser-output > p"}'
-        >{"title": "h1", "intro": ".mw-parser-output > p"}</textarea>
+          placeholder='{"title": "h1", "title_link": "h1 a@href", "intro": ".mw-parser-output > p"}'
+        >{"title": "h1", "title_link": "h1 a@href", "intro": ".mw-parser-output > p"}</textarea>
       </div>
       <div class="form-group">
         <label>Response Format:</label>
@@ -466,11 +466,12 @@ export function generateLandingPage(baseUrl: string): string {
 
     <div class="example">
       <div class="example-header">
-        <h3 style="margin: 0;">Example 1: Wikipedia Article</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(1, 'https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', intro: '.mw-parser-output > p'})">Try It</button>
+        <h3 style="margin: 0;">Example 1: Wikipedia Article with Links</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(1, 'https://en.wikipedia.org/wiki/Deno_(software)', {title: 'h1', title_link: 'h1 a@href', intro: '.mw-parser-output > p'})">Try It</button>
       </div>
       <pre><code>const extract = {
   "title": "h1",
+  "title_link": "h1 a@href",  // Extract link using @href
   "intro": ".mw-parser-output > p"
 };</code></pre>
       <div class="response-container" id="response1">
@@ -548,6 +549,22 @@ export function generateLandingPage(baseUrl: string): string {
 };</code></pre>
       <div class="response-container" id="response6">
         <div class="response-box" id="responseBox6"></div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="example-header">
+        <h3 style="margin: 0;">Example 7: Bold.dk News with Links 🇩🇰</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(7, 'https://bold.dk', {overskrifter: '.article-headline', overskrifter_link: '.thumb.article_list_item@href', kategorier: '.ArticleListItem__tag'})">Try It</button>
+      </div>
+      <p>Extract Danish news headlines with clickable links (naming convention):</p>
+      <pre><code>const extract = {
+  "overskrifter": ".article-headline",
+  "overskrifter_link": ".thumb.article_list_item@href",  // _link suffix creates clickable links
+  "kategorier": ".ArticleListItem__tag"
+};</code></pre>
+      <div class="response-container" id="response7">
+        <div class="response-box" id="responseBox7"></div>
       </div>
     </div>
   </div>
