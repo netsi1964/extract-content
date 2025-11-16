@@ -496,13 +496,12 @@ export function generateLandingPage(baseUrl: string): string {
 
     <div class="example">
       <div class="example-header">
-        <h3 style="margin: 0;">Example 3: Stack Overflow</h3>
-        <button class="btn btn-small btn-secondary" onclick="runExample(3, 'https://stackoverflow.com/questions/1', {question: 'h1 a', votes: '.js-vote-count', tags: '.post-tag'})">Try It</button>
+        <h3 style="margin: 0;">Example 3: Dev.to Articles</h3>
+        <button class="btn btn-small btn-secondary" onclick="runExample(3, 'https://dev.to', {headlines: 'h2.crayons-story__title a', authors: '.crayons-story__secondary a'})">Try It</button>
       </div>
       <pre><code>const extract = {
-  "question": "h1 a",
-  "votes": ".js-vote-count",
-  "tags": ".post-tag"
+  "headlines": "h2.crayons-story__title a",
+  "authors": ".crayons-story__secondary a"
 };</code></pre>
       <div class="response-container" id="response3">
         <div class="response-box" id="responseBox3"></div>
