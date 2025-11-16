@@ -695,7 +695,7 @@ export function generateLandingPage(baseUrl: string): string {
         // Check if response is OK before parsing
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(\`HTTP \${response.status}: \${errorText}\`);
+          throw new Error('HTTP ' + response.status + ': ' + errorText);
         }
 
         const data = await response.json();
@@ -805,7 +805,7 @@ export function generateLandingPage(baseUrl: string): string {
 
           fetch(apiUrl)
             .then(r => {
-              if (!r.ok) throw new Error(\`HTTP \${r.status}: \${r.statusText}\`);
+              if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + r.statusText);
               return r.json();
             })
             .then(data => {
