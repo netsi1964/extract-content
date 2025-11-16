@@ -312,6 +312,11 @@ export function generateLandingPage(baseUrl: string): string {
   <header>
     <h1>🚀 extract-content</h1>
     <p class="subtitle">A lightweight web scraping API powered by Deno that extracts data from any website using CSS selectors</p>
+    <div style="margin-top: 20px;">
+      <a href="/tutorial" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(249, 115, 22, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(249, 115, 22, 0.3)'">
+        📚 View Interactive Tutorial
+      </a>
+    </div>
   </header>
 
   <div class="section playground">

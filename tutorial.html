@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extract Content API - Interactive Tutorial</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Container Query Support */
+    @container (min-width: 400px) {
+      .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @container (min-width: 600px) {
+      .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Custom animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    .slide-in {
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    /* Code syntax highlighting */
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .code-keyword { color: #c792ea; }
+    .code-string { color: #c3e88d; }
+    .code-function { color: #82aaff; }
+    .code-comment { color: #676e95; font-style: italic; }
+    .code-number { color: #f78c6c; }
+
+    /* Tab styles */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Container for container queries */
+    news-container {
+      container-type: inline-size;
+      display: block;
+    }
+
+    /* Smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-orange-950 to-slate-900 min-h-screen text-white">
+
+  <!-- Header -->
+  <header class="bg-black/30 backdrop-blur-md border-b border-orange-500/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/50">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold">Extract Content API</h1>
+            <p class="text-sm text-orange-400">Interactive Tutorial</p>
+          </div>
+        </div>
+        <a href="/" class="hidden sm:flex items-center gap-2 text-sm text-gray-400 hover:text-orange-400 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Introduction -->
+    <section class="mb-8 fade-in">
+      <div class="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-2xl p-8">
+        <h2 class="text-3xl font-bold mb-4">Welcome to the Tutorial! 👋</h2>
+        <p class="text-gray-300 text-lg mb-4">
+          Learn how to extract news from <strong>Bold.dk</strong> using the Extract Content API.
+          This step-by-step tutorial will show you how to build a complete news reader.
+        </p>
+        <div class="flex flex-wrap gap-4 mt-6">
+          <div class="flex items-center gap-2 text-orange-400">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>Vanilla JavaScript</span>
+          </div>
+          <div class="flex items-center gap-2 text-orange-400">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>Web Components</span>
+          </div>
+          <div class="flex items-center gap-2 text-orange-400">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span>Container Queries</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <nav class="mb-8">
+      <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-2">
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button onclick="showTab(1)" id="tab-btn-1" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg">
+            <div class="flex items-center justify-center gap-2">
+              <span class="flex-shrink-0 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+              <span>Basic Headlines</span>
+            </div>
+          </button>
+          <button onclick="showTab(2)" id="tab-btn-2" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700">
+            <div class="flex items-center justify-center gap-2">
+              <span class="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+              <span>Add Metadata</span>
+            </div>
+          </button>
+          <button onclick="showTab(3)" id="tab-btn-3" class="tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700">
+            <div class="flex items-center justify-center gap-2">
+              <span class="flex-shrink-0 w-6 h-6 bg-white/10 rounded-full flex items-center justify-center text-sm font-bold">3</span>
+              <span>News Cards</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Tab 1: Basic Headlines -->
+    <div id="tab-1" class="tab-content active">
+      <div class="slide-in">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2">Step 1: Fetch Basic Headlines</h2>
+          <p class="text-gray-400">Let's start by extracting article headlines from Bold.dk using CSS selectors</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 mb-6">
+          <!-- Code Example -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-300">example-1.js</span>
+              <span class="text-xs text-orange-400">Vanilla JavaScript</span>
+            </div>
+            <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Step 1: Define API endpoint and extract parameters</span>
+<span class="code-keyword">const</span> <span class="code-function">API_URL</span> = <span class="code-string">'https://extract-content.deno.dev'</span>;
+<span class="code-keyword">const</span> <span class="code-function">extractParams</span> = {
+  <span class="code-string">"overskrifter"</span>: <span class="code-string">".article-headline"</span>
+};
+
+<span class="code-comment">// Step 2: Build the request URL</span>
+<span class="code-keyword">const</span> <span class="code-function">url</span> = <span class="code-string">`\${API_URL}/?from=https://bold.dk&extract=\${<span class="code-function">encodeURIComponent</span>(<span class="code-function">JSON.stringify</span>(extractParams))}`</span>;
+
+<span class="code-comment">// Step 3: Fetch data from API</span>
+<span class="code-keyword">const</span> <span class="code-function">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(url);
+<span class="code-keyword">const</span> <span class="code-function">data</span> = <span class="code-keyword">await</span> response.<span class="code-function">json</span>();
+
+<span class="code-comment">// Step 4: Display headlines</span>
+data.overskrifter.<span class="code-function">forEach</span>(headline => {
+  console.<span class="code-function">log</span>(headline);
+});</code></pre>
+          </div>
+
+          <!-- JSON Parameter -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
+              <span class="text-sm font-semibold text-gray-300">Extract Parameter (JSON)</span>
+            </div>
+            <div class="p-4">
+              <pre class="code-block p-4 rounded-lg"><code>{
+  <span class="code-string">"overskrifter"</span>: <span class="code-string">".article-headline"</span>
+}</code></pre>
+              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <p class="text-sm text-gray-300 mb-2"><strong>💡 How it works:</strong></p>
+                <p class="text-sm text-gray-400">
+                  The CSS selector <code class="text-orange-400">.article-headline</code> targets all elements with
+                  the class "article-headline". The API returns an array of text content from these elements.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Run Button -->
+        <div class="mb-6">
+          <button
+            onclick="runExample1()"
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            ▶ Run Example 1
+          </button>
+        </div>
+
+        <!-- Result Display -->
+        <div id="result1"></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Add Metadata -->
+    <div id="tab-2" class="tab-content">
+      <div class="slide-in">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2">Step 2: Add Categories & Timestamps</h2>
+          <p class="text-gray-400">Extract multiple pieces of data by using multiple CSS selectors</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 mb-6">
+          <!-- Code Example -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-300">example-2.js</span>
+              <span class="text-xs text-orange-400">Enhanced Extraction</span>
+            </div>
+            <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Extract multiple data points with different selectors</span>
+<span class="code-keyword">const</span> <span class="code-function">extractParams</span> = {
+  <span class="code-string">"overskrifter"</span>: <span class="code-string">".article-headline"</span>,
+  <span class="code-string">"kategorier"</span>: <span class="code-string">".ArticleListItem__tag"</span>,
+  <span class="code-string">"tidspunkter"</span>: <span class="code-string">".ArticleListItem__timestamp"</span>
+};
+
+<span class="code-keyword">const</span> <span class="code-function">url</span> = <span class="code-string">`https://extract-content.deno.dev/?from=https://bold.dk&extract=\${<span class="code-function">encodeURIComponent</span>(<span class="code-function">JSON.stringify</span>(extractParams))}`</span>;
+
+<span class="code-keyword">const</span> <span class="code-function">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(url);
+<span class="code-keyword">const</span> <span class="code-function">data</span> = <span class="code-keyword">await</span> response.<span class="code-function">json</span>();
+
+<span class="code-comment">// Combine arrays into structured article objects</span>
+<span class="code-keyword">const</span> <span class="code-function">articles</span> = data.overskrifter.<span class="code-function">map</span>((title, i) => ({
+  title,
+  category: data.kategorier[i] || <span class="code-string">'N/A'</span>,
+  time: data.tidspunkter[i] || <span class="code-string">'N/A'</span>
+}));</code></pre>
+          </div>
+
+          <!-- JSON Parameter -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
+              <span class="text-sm font-semibold text-gray-300">Extract Parameter (JSON)</span>
+            </div>
+            <div class="p-4">
+              <pre class="code-block p-4 rounded-lg text-sm"><code>{
+  <span class="code-string">"overskrifter"</span>: <span class="code-string">".article-headline"</span>,
+  <span class="code-string">"kategorier"</span>: <span class="code-string">".ArticleListItem__tag"</span>,
+  <span class="code-string">"tidspunkter"</span>: <span class="code-string">".ArticleListItem__timestamp"</span>
+}</code></pre>
+              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <p class="text-sm text-gray-300 mb-2"><strong>💡 Multiple Selectors:</strong></p>
+                <ul class="text-sm text-gray-400 space-y-1">
+                  <li>• <code class="text-orange-400">.ArticleListItem__tag</code> extracts category tags</li>
+                  <li>• <code class="text-orange-400">.ArticleListItem__timestamp</code> extracts post times</li>
+                  <li>• Each selector returns an array in the same order</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Run Button -->
+        <div class="mb-6">
+          <button
+            onclick="runExample2()"
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            ▶ Run Example 2
+          </button>
+        </div>
+
+        <!-- Result Display -->
+        <div id="result2"></div>
+      </div>
+    </div>
+
+    <!-- Tab 3: News Cards -->
+    <div id="tab-3" class="tab-content">
+      <div class="slide-in">
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2">Step 3: Build Beautiful News Cards</h2>
+          <p class="text-gray-400">Create reusable Web Components for a professional news layout</p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 mb-6">
+          <!-- Code Example -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-300">news-card.js</span>
+              <span class="text-xs text-orange-400">Web Component</span>
+            </div>
+            <pre class="code-block p-4 overflow-x-auto text-sm"><code><span class="code-comment">// Define a custom Web Component</span>
+<span class="code-keyword">class</span> <span class="code-function">NewsCard</span> <span class="code-keyword">extends</span> HTMLElement {
+  <span class="code-function">connectedCallback</span>() {
+    <span class="code-keyword">const</span> title = <span class="code-keyword">this</span>.<span class="code-function">getAttribute</span>(<span class="code-string">'title'</span>);
+    <span class="code-keyword">const</span> category = <span class="code-keyword">this</span>.<span class="code-function">getAttribute</span>(<span class="code-string">'category'</span>);
+    <span class="code-keyword">const</span> time = <span class="code-keyword">this</span>.<span class="code-function">getAttribute</span>(<span class="code-string">'time'</span>);
+
+    <span class="code-keyword">this</span>.innerHTML = <span class="code-string">`
+      &lt;div class="card"&gt;
+        &lt;span class="category"&gt;\${category}&lt;/span&gt;
+        &lt;h3&gt;\${title}&lt;/h3&gt;
+        &lt;span class="time"&gt;\${time}&lt;/span&gt;
+      &lt;/div&gt;
+    `</span>;
+  }
+}
+
+<span class="code-comment">// Register the custom element</span>
+customElements.<span class="code-function">define</span>(<span class="code-string">'news-card'</span>, NewsCard);</code></pre>
+          </div>
+
+          <!-- Usage Example -->
+          <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-900/80 px-4 py-3 border-b border-slate-700">
+              <span class="text-sm font-semibold text-gray-300">Usage in HTML</span>
+            </div>
+            <div class="p-4">
+              <pre class="code-block p-4 rounded-lg text-sm"><code><span class="code-comment">&lt;!-- Use the custom element --&gt;</span>
+&lt;<span class="code-function">news-card</span>
+  <span class="code-keyword">title</span>=<span class="code-string">"Article headline"</span>
+  <span class="code-keyword">category</span>=<span class="code-string">"VM kval. UEFA"</span>
+  <span class="code-keyword">time</span>=<span class="code-string">"12:47"</span>
+&gt;&lt;/<span class="code-function">news-card</span>&gt;</code></pre>
+              <div class="mt-4 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg">
+                <p class="text-sm text-gray-300 mb-2"><strong>🎯 Benefits:</strong></p>
+                <ul class="text-sm text-gray-400 space-y-1">
+                  <li>✓ Reusable across projects</li>
+                  <li>✓ Encapsulated logic</li>
+                  <li>✓ Native browser support</li>
+                  <li>✓ Responsive with container queries</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Run Button -->
+        <div class="mb-6">
+          <button
+            onclick="runExample3()"
+            class="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 px-8 py-4 rounded-lg font-semibold transition-all transform hover:scale-105 shadow-lg shadow-orange-500/50 text-lg">
+            ▶ Run Example 3 - Build News Grid
+          </button>
+        </div>
+
+        <!-- Result Display -->
+        <div id="result3"></div>
+      </div>
+    </div>
+
+    <!-- API Reference Section -->
+    <section class="mt-16 mb-8">
+      <div class="bg-gradient-to-r from-slate-800/50 to-slate-700/50 backdrop-blur rounded-2xl border border-slate-600 p-8">
+        <h2 class="text-2xl font-bold mb-6 text-orange-400">🔧 API Reference</h2>
+
+        <div class="space-y-6">
+          <!-- Endpoint -->
+          <div>
+            <h3 class="text-lg font-semibold mb-2 text-orange-300">Endpoint</h3>
+            <code class="block bg-black/40 p-3 rounded text-sm break-all">
+              GET https://extract-content.deno.dev/?from={URL}&extract={JSON}
+            </code>
+          </div>
+
+          <!-- Parameters -->
+          <div>
+            <h3 class="text-lg font-semibold mb-2 text-orange-300">Parameters</h3>
+            <div class="space-y-2">
+              <div class="bg-black/40 p-3 rounded">
+                <code class="text-yellow-400">from</code>
+                <span class="text-gray-400 ml-2">- Target URL to scrape (e.g., https://bold.dk)</span>
+              </div>
+              <div class="bg-black/40 p-3 rounded">
+                <code class="text-yellow-400">extract</code>
+                <span class="text-gray-400 ml-2">- URL-encoded JSON object with CSS selectors</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CSS Selectors for Bold.dk -->
+          <div>
+            <h3 class="text-lg font-semibold mb-2 text-orange-300">CSS Selectors for Bold.dk</h3>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <div class="bg-black/40 p-3 rounded text-sm">
+                <code class="text-orange-400">.article-headline</code>
+                <p class="text-gray-400 text-xs mt-1">Article titles</p>
+              </div>
+              <div class="bg-black/40 p-3 rounded text-sm">
+                <code class="text-orange-400">.ArticleListItem__tag</code>
+                <p class="text-gray-400 text-xs mt-1">Category tags</p>
+              </div>
+              <div class="bg-black/40 p-3 rounded text-sm">
+                <code class="text-orange-400">.ArticleListItem__timestamp</code>
+                <p class="text-gray-400 text-xs mt-1">Publication time</p>
+              </div>
+              <div class="bg-black/40 p-3 rounded text-sm">
+                <code class="text-orange-400">.ArticleListItem__commentsCount</code>
+                <p class="text-gray-400 text-xs mt-1">Comment count</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-black/30 border-t border-orange-500/20 py-6 mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400 text-sm">
+      <p>Built with 🧡 using Extract Content API • Vanilla JS • Tailwind CSS • Web Components</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const API_BASE = window.location.origin;
+
+    // Tab switching
+    function showTab(tabNumber) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      // Reset all buttons
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-slate-700/50 text-gray-300 hover:bg-slate-700';
+      });
+
+      // Show selected tab
+      document.getElementById(`tab-${tabNumber}`).classList.add('active');
+
+      // Highlight selected button
+      document.getElementById(`tab-btn-${tabNumber}`).className = 'tab-button flex-1 px-6 py-3 rounded-lg font-semibold transition-all bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg';
+
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Define NewsCard Web Component
+    class NewsCard extends HTMLElement {
+      connectedCallback() {
+        const title = this.getAttribute('title');
+        const category = this.getAttribute('category') || 'General';
+        const time = this.getAttribute('time') || 'N/A';
+
+        this.className = 'block';
+        this.innerHTML = `
+          <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 border border-slate-700 hover:border-orange-500/50 transition-all hover:scale-[1.02] shadow-lg hover:shadow-orange-500/20 cursor-pointer">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-3 py-1 bg-orange-500/20 text-orange-400 rounded-full text-xs font-semibold">
+                ${category}
+              </span>
+              <span class="text-gray-500 text-xs flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                ${time}
+              </span>
+            </div>
+            <h3 class="text-white font-semibold text-sm leading-snug line-clamp-3">
+              ${title}
+            </h3>
+          </div>
+        `;
+      }
+    }
+    customElements.define('news-card', NewsCard);
+
+    // Example 1: Basic Headlines
+    async function runExample1() {
+      const resultDiv = document.getElementById('result1');
+      resultDiv.innerHTML = `
+        <div class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          <p class="mt-2 text-gray-400">Fetching headlines from Bold.dk...</p>
+        </div>
+      `;
+
+      try {
+        const extractParams = {
+          "overskrifter": ".article-headline"
+        };
+
+        const url = `${API_BASE}/?from=https://bold.dk&extract=${encodeURIComponent(JSON.stringify(extractParams))}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const headlines = data.overskrifter.slice(0, 10);
+
+        resultDiv.innerHTML = `
+          <div class="space-y-6 fade-in">
+            <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-6">
+              <h3 class="text-xl font-bold mb-4 text-orange-400">✓ Successfully fetched ${headlines.length} headlines</h3>
+              <ul class="space-y-3">
+                ${headlines.map((headline, i) => `
+                  <li class="flex items-start gap-3 text-gray-300 hover:text-white transition">
+                    <span class="flex-shrink-0 w-6 h-6 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center text-xs font-bold">
+                      ${i + 1}
+                    </span>
+                    <span class="flex-1">${headline}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+
+            <div class="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
+                <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                What you're seeing:
+              </h4>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Live data:</strong> Real headlines from Bold.dk, fetched in real-time</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Simple extraction:</strong> One CSS selector returned ${headlines.length} results</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Clean data:</strong> Pure text content, no HTML markup</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
+            <p class="text-red-400">❌ Error: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Example 2: Headlines with Categories and Timestamps
+    async function runExample2() {
+      const resultDiv = document.getElementById('result2');
+      resultDiv.innerHTML = `
+        <div class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          <p class="mt-2 text-gray-400">Fetching enhanced data...</p>
+        </div>
+      `;
+
+      try {
+        const extractParams = {
+          "overskrifter": ".article-headline",
+          "kategorier": ".ArticleListItem__tag",
+          "tidspunkter": ".ArticleListItem__timestamp"
+        };
+
+        const url = `${API_BASE}/?from=https://bold.dk&extract=${encodeURIComponent(JSON.stringify(extractParams))}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const articles = data.overskrifter.slice(0, 8).map((title, i) => ({
+          title,
+          category: data.kategorier[i] || 'General',
+          time: data.tidspunkter[i] || 'N/A'
+        }));
+
+        resultDiv.innerHTML = `
+          <div class="space-y-6 fade-in">
+            <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 p-6">
+              <h3 class="text-xl font-bold mb-4 text-orange-400">✓ Successfully fetched ${articles.length} articles with metadata</h3>
+              <div class="space-y-3">
+                ${articles.map((article, i) => `
+                  <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-orange-500/50 transition">
+                    <div class="flex items-center gap-3 mb-2 flex-wrap">
+                      <span class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded text-xs font-semibold">
+                        ${article.category}
+                      </span>
+                      <span class="text-gray-500 text-xs flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        ${article.time}
+                      </span>
+                    </div>
+                    <p class="text-white font-medium">${article.title}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
+                <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                What's new:
+              </h4>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Multiple selectors:</strong> We extracted 3 different data points with one API call</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Structured data:</strong> Arrays are combined into article objects using .map()</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span><strong>Rich metadata:</strong> Categories show article type, timestamps show when posted</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
+            <p class="text-red-400">❌ Error: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Example 3: Full News Cards Grid
+    async function runExample3() {
+      const resultDiv = document.getElementById('result3');
+      resultDiv.innerHTML = `
+        <div class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+          <p class="mt-2 text-gray-400">Building news grid...</p>
+        </div>
+      `;
+
+      try {
+        const extractParams = {
+          "overskrifter": ".article-headline",
+          "kategorier": ".ArticleListItem__tag",
+          "tidspunkter": ".ArticleListItem__timestamp"
+        };
+
+        const url = `${API_BASE}/?from=https://bold.dk&extract=${encodeURIComponent(JSON.stringify(extractParams))}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const articles = data.overskrifter.slice(0, 12).map((title, i) => ({
+          title,
+          category: data.kategorier[i] || 'General',
+          time: data.tidspunkter[i] || 'N/A'
+        }));
+
+        resultDiv.innerHTML = `
+          <div class="fade-in space-y-6">
+            <div class="bg-gradient-to-r from-orange-500/10 to-amber-500/10 border border-orange-500/20 rounded-xl p-6">
+              <h3 class="text-2xl font-bold mb-2 text-orange-400">
+                ✓ Successfully built ${articles.length} news cards
+              </h3>
+              <p class="text-gray-400">Using custom Web Components with responsive grid layout</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              ${articles.map(article => `
+                <news-card
+                  title="${article.title.replace(/"/g, '&quot;')}"
+                  category="${article.category}"
+                  time="${article.time}"
+                ></news-card>
+              `).join('')}
+            </div>
+
+            <div class="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                What we accomplished:
+              </h4>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">✓</span>
+                  <span><strong>Web Components:</strong> Reusable &lt;news-card&gt; custom element</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">✓</span>
+                  <span><strong>Responsive Grid:</strong> Adapts from 1 to 4 columns based on screen size</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">✓</span>
+                  <span><strong>Hover Effects:</strong> Interactive cards with smooth transitions</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">✓</span>
+                  <span><strong>Production Ready:</strong> This code can be used in real projects!</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-6">
+              <h4 class="font-bold mb-3 text-lg text-orange-400">🚀 Next Steps</h4>
+              <p class="text-gray-300 mb-4">Now that you know how to extract content, try these ideas:</p>
+              <ul class="space-y-2 text-gray-300 text-sm">
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span>Extract content from other websites (use browser DevTools to find CSS selectors)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span>Build a personal news aggregator with multiple sources</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span>Add search/filter functionality to the news grid</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-orange-400">→</span>
+                  <span>Store articles in localStorage for offline reading</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <div class="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
+            <p class="text-red-400">❌ Error: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

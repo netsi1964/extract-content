@@ -3,6 +3,7 @@ import { errorResponse } from "./utils/response.ts";
 import { handleExtract } from "./handlers/extract.ts";
 import { handleHtml } from "./handlers/html.ts";
 import { handleRaw } from "./handlers/raw.ts";
+import { handleTutorial } from "./handlers/tutorial.ts";
 
 /**
  * Route map - maps URL paths to handler functions
@@ -11,6 +12,7 @@ const routes: RouteMap = new Map([
   ["/", handleExtract],
   ["/html", handleHtml],
   ["/raw", handleRaw],
+  ["/tutorial", handleTutorial],
 ]);
 
 /**

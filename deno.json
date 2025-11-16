@@ -8,15 +8,25 @@
     "@deno-dom": "jsr:@b-fuze/deno-dom@^0.1.48"
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-env main.ts",
-    "dev": "deno run --allow-net --allow-env --watch main.ts",
+    "start": "deno run --allow-net --allow-env --allow-read=./tutorial.html main.ts",
+    "dev": "deno run --allow-net --allow-env --allow-read=./tutorial.html --watch main.ts",
     "test": "deno test --allow-net --allow-env",
     "check": "deno check main.ts"
   },
   "fmt": {
     "semiColons": true,
     "lineWidth": 100,
-    "exclude": ["app.js", "routes/", "modules/", "node_modules/", "exampleRequest.html"]
+    "exclude": [
+      "app.js",
+      "routes/",
+      "modules/",
+      "node_modules/",
+      "exampleRequest.html",
+      "tutorial.html",
+      "bold-dk.html",
+      "codepen-example.html",
+      "search-emoji-codepen-example.html"
+    ]
   },
   "lint": {
     "exclude": ["app.js", "routes/", "modules/", "node_modules/"],
