@@ -847,7 +847,13 @@ export function generateLandingPage(baseUrl: string): string {
 
       try {
         const extract = JSON.parse(extractJson);
-        const apiUrl = buildUrl(fromUrl, extract, '/');
+
+        // Build production API URL for bookmarklet (always use production server)
+        const params = new URLSearchParams({
+          from: fromUrl,
+          extract: JSON.stringify(extract)
+        });
+        const apiUrl = 'https://extract-content.netsi1964.deno.net/?' + params.toString();
 
         // Extract domain name for intelligent default
         let defaultName = 'Extract Content';
